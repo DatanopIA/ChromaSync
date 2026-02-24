@@ -1,7 +1,9 @@
 import { useParams, Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Download, RefreshCw, Type, Layout, Palette, Check, Upload, Trash2, ExternalLink } from "lucide-react";
+import { ArrowLeft, Download, RefreshCw, Type, Layout, Palette, Check, Upload, Trash2, ExternalLink, FileText, Code, Share2, Globe, Copy as CopyIcon, Layers } from "lucide-react";
 import { useState, useEffect, useRef, ChangeEvent } from "react";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 const projects = [
     { id: 1, name: "Cyberpunk Neon", colors: ["#FF003C", "#00E5FF", "#FCEE0A", "#1A1A1A", "#FFFFFF"], date: "2 days ago", isAI: true },
@@ -52,12 +54,16 @@ export default function BrandKit() {
     const [selectedFont, setSelectedFont] = useState(googleFonts[0]);
     const [customFontName, setCustomFontName] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const previewRef = useRef<HTMLDivElement>(null);
 
-    // Save states
+    // Save & Export states
     const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
+    const [isExportModalOpen, setIsExportModalOpen] = useState(false);
     const [kitName, setKitName] = useState(currentProject.name);
     const [isSaving, setIsSaving] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
+    const [successMessage, setSuccessMessage] = useState("");
+    const [exportType, setExportType] = useState<string | null>(null);
 
     // Inject Google Fonts
     useEffect(() => {
@@ -105,6 +111,89 @@ export default function BrandKit() {
         }, 1500);
     };
 
+    const downloadCode = (type: 'css' | 'json') => {
+        const data = type === 'css'
+            ? `:root {\n  --primary: ${primary};\n  --secondary: ${secondary};\n  --background: ${background};\n  --accent: ${accent};\n  --font-family: ${selectedFont.family};\n}`
+            : JSON.stringify({
+                name: kitName,
+                colors: { primary, secondary, background, accent },
+                typography: selectedFont
+            }, null, 2);
+
+        const blob = new Blob([data], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${kitName.toLowerCase().replace(/\s+/g, '-')}.${type}`;
+        a.click();
+        URL.revokeObjectURL(url);
+    };
+
+    const handleExport = async (type: string) => {
+        setExportType(type);
+        setIsSaving(true);
+
+        try {
+            if (type === 'css' || type === 'json') {
+                downloadCode(type as 'css' | 'json');
+                setSuccessMessage(`¡Código ${type.toUpperCase()} descargado con éxito!`);
+            } else if (type === 'copy') {
+                const text = `Brand: ${kitName}\nPrimary: ${primary}\nSecondary: ${secondary}\nAccent: ${accent}\nBackground: ${background}\nFont: ${selectedFont.name}`;
+                navigator.clipboard.writeText(text);
+                setSuccessMessage("¡Activos copiados al portapapeles!");
+            } else if (type === 'pdf') {
+                if (previewRef.current) {
+                    const canvas = await html2canvas(previewRef.current, {
+                        scale: 2,
+                        useCORS: true,
+                        backgroundColor: '#FFFFFF',
+                        logging: false
+                    });
+                    const imgData = canvas.toDataURL('image/png');
+                    const pdf = new jsPDF('p', 'mm', 'a4');
+                    const imgProps = pdf.getImageProperties(imgData);
+                    const pdfWidth = pdf.internal.pageSize.getWidth();
+                    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                    pdf.save(`${kitName.toLowerCase().replace(/\s+/g, '-')}-brand-guide.pdf`);
+                    setSuccessMessage("¡Guía de marca PDF visual generada!");
+                }
+            } else if (type === 'canva') {
+                // Redirect to Canva Brand Kits
+                window.open('https://www.canva.com/brand-kits', '_blank');
+                setSuccessMessage("¡Redirigiendo a Canva!");
+            } else if (type === 'figma') {
+                // Redirect to Figma
+                window.open('https://www.figma.com', '_blank');
+                setSuccessMessage("¡Redirigiendo a Figma!");
+            } else {
+                setSuccessMessage(`¡Exportación a ${type.toUpperCase()} completada!`);
+            }
+
+            // Common success cleanup
+            setIsExportModalOpen(false);
+            setExportType(null);
+            setShowSuccess(true);
+
+            import('canvas-confetti').then(confetti => {
+                confetti.default({
+                    particleCount: 150,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: [primary, secondary, accent]
+                });
+            });
+
+            setTimeout(() => setShowSuccess(false), 4000);
+        } catch (error) {
+            console.error("Export error:", error);
+            setSuccessMessage("Error al exportar el archivo.");
+            setShowSuccess(true);
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
     const shuffleColors = () => {
         const shuffled = [...currentProject.colors].sort(() => Math.random() - 0.5);
         setPrimary(shuffled[0]);
@@ -135,10 +224,16 @@ export default function BrandKit() {
                         <RefreshCw size={16} /> Shuffle Layout
                     </button>
                     <button
+                        onClick={() => setIsExportModalOpen(true)}
+                        className="flex items-center gap-2 px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-black rounded-full text-sm font-bold transition-all active:scale-95"
+                    >
+                        <Download size={16} /> Export
+                    </button>
+                    <button
                         onClick={() => setIsSaveModalOpen(true)}
                         className="flex items-center gap-2 px-6 py-2.5 bg-black text-white rounded-full text-sm font-bold shadow-xl shadow-black/10 hover:bg-gray-800 transition-all active:scale-95"
                     >
-                        <Download size={16} /> Save Kit
+                        <Check size={16} /> Save Kit
                     </button>
                 </div>
             </div>
@@ -155,7 +250,7 @@ export default function BrandKit() {
                         <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
                             <Check size={14} />
                         </div>
-                        <span className="font-bold">¡Brand Kit "{kitName}" guardado con éxito!</span>
+                        <span className="font-bold">{successMessage || `¡Brand Kit "${kitName}" guardado con éxito!`}</span>
                     </motion.div>
                 )}
             </AnimatePresence>
@@ -217,6 +312,77 @@ export default function BrandKit() {
                                         )}
                                     </button>
                                 </div>
+                            </div>
+                        </motion.div>
+                    </>
+                )}
+            </AnimatePresence>
+
+            {/* Export Modal */}
+            <AnimatePresence>
+                {isExportModalOpen && (
+                    <>
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setIsExportModalOpen(false)}
+                            className="fixed inset-0 bg-black/60 backdrop-blur-md z-[100]"
+                        />
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                            className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl bg-white rounded-[40px] p-10 z-[110] shadow-2xl font-sans"
+                        >
+                            <div className="flex flex-col gap-8">
+                                <div className="flex flex-col gap-2 text-center items-center">
+                                    <div className="w-16 h-16 bg-gray-50 rounded-3xl flex items-center justify-center mb-2">
+                                        <Download size={32} className="text-black" />
+                                    </div>
+                                    <h2 className="text-3xl font-bold tracking-tight">Export Brand Kit</h2>
+                                    <p className="text-gray-500 max-w-md">Choose your preferred format to take your brand identity to the next level.</p>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {[
+                                        { id: 'pdf', name: 'Brand Guide (PDF)', icon: <FileText size={20} />, desc: 'Full aesthetic documentation.' },
+                                        { id: 'canva', name: 'Canva Layout', icon: <Layers size={20} />, desc: 'Ready for social media.' },
+                                        { id: 'figma', name: 'Figma Tokens', icon: <Share2 size={20} />, desc: 'For professional designers.' },
+                                        { id: 'css', name: 'CSS Variables', icon: <Code size={20} />, desc: 'Implementation ready.' },
+                                        { id: 'json', name: 'JSON Data', icon: <Globe size={20} />, desc: 'For custom API integration.' },
+                                        { id: 'copy', name: 'Copy Assets', icon: <CopyIcon size={20} />, desc: 'Paste directly anywhere.' },
+                                    ].map((opt) => (
+                                        <button
+                                            key={opt.id}
+                                            onClick={() => handleExport(opt.id)}
+                                            disabled={isSaving && exportType !== opt.id}
+                                            className={`p-6 rounded-3xl border-2 text-left transition-all hover:border-black flex gap-4 items-center group
+                                                ${exportType === opt.id ? 'border-black bg-black text-white' : 'border-gray-50 bg-gray-50/50'}
+                                            `}
+                                        >
+                                            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-colors
+                                                ${exportType === opt.id ? 'bg-white/20' : 'bg-white shadow-sm group-hover:bg-black group-hover:text-white'}
+                                            `}>
+                                                {opt.icon}
+                                            </div>
+                                            <div className="flex flex-col">
+                                                <span className="font-bold">{opt.name}</span>
+                                                <span className={`text-[10px] ${exportType === opt.id ? 'text-white/60' : 'text-gray-400'}`}>{opt.desc}</span>
+                                            </div>
+                                            {isSaving && exportType === opt.id && (
+                                                <RefreshCw size={18} className="animate-spin ml-auto" />
+                                            )}
+                                        </button>
+                                    ))}
+                                </div>
+
+                                <button
+                                    onClick={() => setIsExportModalOpen(false)}
+                                    className="w-full py-4 text-gray-400 hover:text-black font-bold transition-colors text-sm uppercase tracking-widest"
+                                >
+                                    Not now, stay in editor
+                                </button>
                             </div>
                         </motion.div>
                     </>
@@ -336,6 +502,7 @@ export default function BrandKit() {
                         key={activeCombo}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
+                        ref={previewRef}
                         className="w-full max-w-6xl flex flex-col gap-8 md:gap-12"
                     >
                         {/* Main Brand Showcase */}
