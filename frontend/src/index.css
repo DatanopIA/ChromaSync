@@ -1,0 +1,105 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  /* Base semantic colors - mapped to variables that change based on theme class */
+  --color-background: var(--bg-main);
+  --color-foreground: var(--fg-main);
+  --color-muted: var(--bg-muted);
+  --color-muted-foreground: var(--fg-muted);
+  --color-card: var(--bg-card);
+  --color-card-foreground: var(--fg-card);
+  --color-border: var(--border-main);
+
+  --color-primary: #000000;
+  --color-primary-foreground: #ffffff;
+}
+
+:root {
+  --bg-main: #ffffff;
+  --fg-main: #111111;
+  --bg-muted: #f8f8f8;
+  --fg-muted: #71717a;
+  --bg-card: #ffffff;
+  --fg-card: #111111;
+  --border-main: rgba(228, 228, 231, 0.5);
+
+  --destructive-foreground: oklch(1 0 0);
+  background-color: var(--bg-main);
+  color: var(--fg-main);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.dark {
+  --bg-main: #050505;
+  --fg-main: #ffffff;
+  --bg-muted: #262626;
+  /* Adjusted for better visibility */
+  --fg-muted: #a1a1a6;
+  /* Adjusted for better visibility */
+  --bg-card: #0a0a0a;
+  --fg-card: #ffffff;
+  --border-main: #333333;
+  /* Adjusted for better visibility */
+
+  --color-primary: #ffffff;
+  --color-primary-foreground: #000000;
+}
+
+body {
+  background-color: var(--bg-main);
+  color: var(--fg-main);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+/* Glass effect */
+.glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.dark .glass {
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.glass-dark {
+  background: rgba(0, 0, 0, 0.4);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+@theme inline {
+  --color-destructive-foreground: oklch(1 0 0);
+  --color-color-destructive-foreground: var(----color-destructive-foreground);
+}

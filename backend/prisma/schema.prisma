@@ -1,0 +1,132 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Plan {
+  FREE
+  PLUS
+  PRO
+}
+
+enum Role {
+  OWNER
+  EDITOR
+  VIEWER
+}
+
+model User {
+  id                   String          @id @default(uuid())
+  email                String          @unique
+  fullName             String?         @map("full_name")
+  avatarUrl            String?         @map("avatar_url")
+  plan                 Plan            @default(FREE)
+  stripeCustomerId     String?         @unique @map("stripe_customer_id")
+  stripeSubscriptionId String?         @map("stripe_subscription_id")
+  points               Int             @default(0)
+  palettes             Palette[]
+  moodboards           Moodboard[]
+  collaborations       Collaboration[]
+  badges               UserBadge[]
+  activityLogs         ActivityLog[]   @relation("UserLogs")
+  comments             Comment[]
+  invitedCollaborations Collaboration[] @relation("InvitedBy")
+  createdAt            DateTime        @default(now()) @map("created_at")
+  updatedAt            DateTime        @updatedAt @map("updated_at")
+
+  @@map("users")
+}
+
+model Palette {
+  id                String             @id @default(uuid())
+  name              String
+  colors            Json // Array of {hex, name, ratio}
+  isPublic          Boolean            @default(false) @map("is_public")
+  aiGenerated       Boolean            @default(false) @map("ai_generated")
+  originImageUrl    String?            @map("origin_image_url")
+  accessibilityData Json?              @map("accessibility_data")
+  tags              String[]
+  owner             User               @relation(fields: [ownerId], references: [id])
+  ownerId           String             @map("owner_id")
+  moodboards        MoodboardPalette[]
+  createdAt         DateTime           @default(now()) @map("created_at")
+
+  @@map("palettes")
+}
+
+model Moodboard {
+  id          String             @id @default(uuid())
+  title       String
+  description String?
+  isShared    Boolean            @default(false) @map("is_shared")
+  user        User               @relation(fields: [userId], references: [id])
+  userId      String             @map("user_id")
+  palettes    MoodboardPalette[]
+  createdAt   DateTime           @default(now()) @map("created_at")
+
+  @@map("moodboards")
+}
+
+model MoodboardPalette {
+  moodboard   Moodboard @relation(fields: [moodboardId], references: [id])
+  moodboardId String    @map("moodboard_id")
+  palette     Palette   @relation(fields: [paletteId], references: [id])
+  paletteId   String    @map("palette_id")
+
+  @@id([moodboardId, paletteId])
+  @@map("moodboard_palettes")
+}
+
+model Collaboration {
+  id           String   @id @default(uuid())
+  resourceType String   @map("resource_type") // 'palette' or 'moodboard'
+  resourceId   String   @map("resource_id")
+  user         User     @relation(fields: [userId], references: [id])
+  userId       String   @map("user_id")
+  role         Role     @default(VIEWER)
+  invitedBy    User?    @relation("InvitedBy", fields: [invitedById], references: [id])
+  invitedById  String?  @map("invited_by_id")
+  status       String   @default("PENDING") // PENDING, ACCEPTED
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@map("collaborations")
+}
+
+model Comment {
+  id              String    @id @default(uuid())
+  resourceId      String    @map("resource_id")
+  user            User      @relation(fields: [userId], references: [id])
+  userId          String    @map("user_id")
+  content         String
+  parentComment   Comment?  @relation("Thread", fields: [parentCommentId], references: [id])
+  parentCommentId String?   @map("parent_comment_id")
+  replies         Comment[] @relation("Thread")
+  createdAt       DateTime  @default(now()) @map("created_at")
+
+  @@map("comments")
+}
+
+model ActivityLog {
+  id           String   @id @default(uuid())
+  user         User     @relation("UserLogs", fields: [userId], references: [id])
+  userId       String   @map("user_id")
+  actionType   String   @map("action_type") // 'swipe_like', 'palette_save', 'export'
+  pointsEarned Int      @default(0) @map("points_earned")
+  metadata     Json?
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@map("activity_log")
+}
+
+model UserBadge {
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String   @map("user_id")
+  badgeName  String   @map("badge_name")
+  unlockedAt DateTime @default(now()) @map("unlocked_at")
+
+  @@id([userId, badgeName])
+  @@map("user_badges")
+}
