@@ -336,7 +336,7 @@ export default function BrandKit() {
                         key={activeCombo}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="w-full max-w-5xl flex flex-col gap-12"
+                        className="w-full max-w-6xl flex flex-col gap-8 md:gap-12"
                     >
                         {/* Main Brand Showcase */}
                         <div
@@ -368,115 +368,125 @@ export default function BrandKit() {
                             </button>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                            {/* Business Card Mockup - FIXED LAYOUT */}
-                            <motion.div
-                                initial={{ opacity: 0, scale: 0.9 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                transition={{ delay: 0.3 }}
-                                className="aspect-[1.6/1] rounded-[32px] p-6 md:p-10 shadow-xl relative overflow-hidden group cursor-pointer perspective-1000 border border-black/5"
-                                style={{ backgroundColor: primary }}
-                            >
-                                <div className="relative z-10 h-full flex flex-col justify-between">
-                                    <div className="flex justify-between items-start">
-                                        <div className="w-10 h-10 md:w-14 md:h-14 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/30">
-                                            <Palette size={24} style={{ color: getContrast(primary) }} />
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 items-start">
+                            {/* Column 1: Business Card & Interaction State */}
+                            <div className="flex flex-col gap-6 md:gap-8">
+                                {/* Business Card Mockup */}
+                                <motion.div
+                                    initial={{ opacity: 0, scale: 0.9 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    transition={{ delay: 0.3 }}
+                                    className="aspect-[1.6/1] rounded-[32px] p-6 md:p-8 shadow-xl relative overflow-hidden group cursor-pointer border border-black/5"
+                                    style={{ backgroundColor: primary }}
+                                >
+                                    <div className="relative z-10 h-full flex flex-col justify-between">
+                                        <div className="flex justify-between items-start">
+                                            <div className="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/30">
+                                                <Palette size={20} style={{ color: getContrast(primary) }} />
+                                            </div>
+                                            <div className="text-[10px] uppercase font-bold tracking-widest leading-none opacity-50" style={{ color: getContrast(primary) }}>Aura Design</div>
                                         </div>
-                                        <div className="text-[10px] uppercase font-bold tracking-widest leading-none opacity-50" style={{ color: getContrast(primary) }}>Aura Design System</div>
-                                    </div>
-                                    <div className="flex flex-col gap-1 pb-2">
-                                        <div className="font-bold text-xl md:text-2xl tracking-tight leading-tight" style={{ color: getContrast(primary) }}>Meritxell Gimenez</div>
-                                        <div className="text-xs font-medium uppercase tracking-widest opacity-70" style={{ color: getContrast(primary) }}>Brand Director</div>
-                                    </div>
-                                </div>
-                                {/* Decorative elements */}
-                                <div className="absolute -bottom-20 -right-20 w-44 h-44 rounded-full blur-[80px] opacity-40" style={{ backgroundColor: secondary }} />
-                                <div className="absolute -top-10 -left-10 w-32 h-32 rounded-full blur-[60px] opacity-20" style={{ backgroundColor: accent }} />
-                            </motion.div>
-
-                            {/* Web Interface Item */}
-                            <div className="bg-white rounded-[32px] shadow-sm border border-gray-100 overflow-hidden flex flex-col h-full">
-                                <div className="h-10 px-4 border-b border-gray-50 flex items-center gap-1.5 font-sans">
-                                    <div className="w-2.5 h-2.5 rounded-full bg-red-400/20" />
-                                    <div className="w-2.5 h-2.5 rounded-full bg-yellow-400/20" />
-                                    <div className="w-2.5 h-2.5 rounded-full bg-green-400/20" />
-                                </div>
-                                <div className="flex-1 p-8 flex flex-col gap-6" style={{ backgroundColor: background + '15' }}>
-                                    <div className="flex items-center justify-between">
-                                        <div className="w-10 h-10 rounded-xl" style={{ backgroundColor: primary }} />
-                                        <div className="flex gap-4 opacity-40">
-                                            <div className="h-1 w-8 rounded-full" style={{ backgroundColor: primary }} />
-                                            <div className="h-1 w-8 rounded-full" style={{ backgroundColor: primary }} />
+                                        <div className="flex flex-col gap-0.5">
+                                            <div className="font-bold text-lg md:text-xl tracking-tight leading-none" style={{ color: getContrast(primary) }}>Meritxell Gimenez</div>
+                                            <div className="text-[9px] font-bold uppercase tracking-[0.2em] opacity-60" style={{ color: getContrast(primary) }}>Brand Director</div>
                                         </div>
                                     </div>
-                                    <h3 className="text-3xl font-bold mt-2 leading-tight" style={{ color: primary }}>Build faster with {selectedFont.name}.</h3>
-                                    <p className="text-sm opacity-50 leading-relaxed" style={{ color: primary }}>
-                                        The perfect balance between aesthetic and usability.
-                                    </p>
-                                    <div className="mt-auto pt-4 flex gap-2">
-                                        <div className="flex-1 h-3 rounded-full" style={{ backgroundColor: secondary + '30' }} />
-                                        <div className="flex-1 h-3 rounded-full" style={{ backgroundColor: accent + '30' }} />
-                                    </div>
-                                </div>
-                            </div>
+                                    <div className="absolute -bottom-10 -right-10 w-32 h-32 rounded-full blur-[60px] opacity-40" style={{ backgroundColor: secondary }} />
+                                </motion.div>
 
-                            {/* Mobile Identity / App Screen - ENHANCED */}
-                            <motion.div
-                                initial={{ opacity: 0, scale: 0.9 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                transition={{ delay: 0.4 }}
-                                className="bg-white rounded-[40px] shadow-sm border border-gray-100 p-8 flex flex-col items-center gap-6 text-center relative overflow-hidden h-full"
-                            >
-                                <div className="absolute inset-x-0 top-0 h-1/3 transition-all" style={{ backgroundColor: background + '40' }} />
-                                <div className="relative z-10 flex flex-col items-center gap-6 pt-4">
-                                    <div className="w-24 h-24 rounded-3xl p-1 shadow-2xl overflow-hidden bg-white">
-                                        <img src="https://picsum.photos/seed/user/200/200" className="w-full h-full object-cover" alt="User" />
-                                    </div>
-                                    <div className="flex flex-col gap-1">
-                                        <h4 className="text-2xl font-bold" style={{ color: primary }}>Official Brand</h4>
-                                        <p className="text-xs uppercase font-bold tracking-[0.2em] opacity-40" style={{ color: primary }}>Creative Hub</p>
-                                    </div>
-                                    <div className="flex gap-2 w-full mt-2">
-                                        <div className="flex-1 py-3 rounded-2xl text-[10px] font-bold uppercase tracking-widest transition-all hover:scale-105" style={{ backgroundColor: primary, color: background }}>Profile</div>
-                                        <div className="flex-1 py-3 rounded-2xl text-[10px] font-bold uppercase tracking-widest border-2 transition-all hover:scale-105" style={{ borderColor: secondary, color: secondary }}>Connect</div>
-                                    </div>
-                                </div>
-                                <div className="flex gap-4 w-full mt-auto">
-                                    {[primary, secondary, accent].map((c, i) => (
-                                        <div key={i} className="flex-1 h-3 rounded-full opacity-30" style={{ backgroundColor: c }} />
-                                    ))}
-                                </div>
-                            </motion.div>
-
-                            {/* UI Components Panel */}
-                            <div className="flex flex-col gap-6">
+                                {/* Interaction State Panel */}
                                 <div className="p-8 rounded-[32px] bg-white border border-gray-100 shadow-sm flex flex-col gap-6">
-                                    <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-gray-400 font-sans">Interaction state</h4>
+                                    <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 font-sans">Components</h4>
                                     <div className="flex flex-col gap-3">
-                                        <div className="p-4 rounded-xl flex items-center justify-between text-white" style={{ backgroundColor: primary }}>
-                                            <span className="font-bold">Button Primary</span>
-                                            <ExternalLink size={16} />
+                                        <div className="p-4 rounded-xl flex items-center justify-between text-white shadow-lg" style={{ backgroundColor: primary }}>
+                                            <span className="font-bold text-sm">Primary Action</span>
+                                            <ExternalLink size={14} />
                                         </div>
-                                        <div className="p-4 rounded-xl flex items-center justify-between border-2" style={{ borderColor: secondary, color: secondary }}>
-                                            <span className="font-bold">Ghost Variant</span>
+                                        <div className="p-4 rounded-xl flex items-center justify-between border-2 border-dashed" style={{ borderColor: secondary + '40', color: secondary }}>
+                                            <span className="font-bold text-sm">Ghost Button</span>
                                         </div>
-                                        <div className="p-4 rounded-xl flex items-center gap-2" style={{ backgroundColor: accent + '15', color: accent }}>
+                                        <div className="p-3 rounded-xl flex items-center gap-3" style={{ backgroundColor: accent + '10', color: accent }}>
                                             <div className="w-2 h-2 rounded-full bg-current animate-pulse" />
-                                            <span className="text-xs font-bold uppercase tracking-widest">Active Status</span>
+                                            <span className="text-[10px] font-bold uppercase tracking-widest">Active State</span>
                                         </div>
-                                    </div>
-                                </div>
-
-                                <div className="p-8 rounded-[32px] shadow-2xl flex flex-col gap-3 relative overflow-hidden group" style={{ backgroundColor: background }}>
-                                    <div className="absolute inset-0 opacity-20 group-hover:opacity-30 transition-opacity" style={{ backgroundImage: `radial-gradient(circle at 2px 2px, ${primary}40 1px, transparent 0)`, backgroundSize: '16px 16px' }} />
-                                    <div className="relative z-10 flex flex-col gap-4">
-                                        <div className="h-1 w-12 rounded-full" style={{ backgroundColor: secondary }} />
-                                        <h5 className="text-4xl font-bold leading-none tracking-tight" style={{ color: primary }}>84%</h5>
-                                        <p className="text-[10px] uppercase font-bold tracking-widest opacity-50" style={{ color: primary }}>Growth Index</p>
                                     </div>
                                 </div>
                             </div>
 
+                            {/* Column 2: Web Interface & Chart */}
+                            <div className="flex flex-col gap-6 md:gap-8">
+                                {/* Web Interface Item */}
+                                <div className="bg-white rounded-[32px] shadow-sm border border-gray-100 overflow-hidden flex flex-col">
+                                    <div className="h-10 px-4 border-b border-gray-50 flex items-center gap-1.5 bg-gray-50/50">
+                                        <div className="w-2 h-2 rounded-full bg-red-400/30" />
+                                        <div className="w-2 h-2 rounded-full bg-yellow-400/30" />
+                                        <div className="w-2 h-2 rounded-full bg-green-400/30" />
+                                    </div>
+                                    <div className="p-8 flex flex-col gap-6" style={{ backgroundColor: background + '10' }}>
+                                        <div className="flex items-center justify-between">
+                                            <div className="w-10 h-10 rounded-xl shadow-inner" style={{ backgroundColor: primary }} />
+                                            <div className="flex gap-3">
+                                                <div className="h-1.5 w-8 rounded-full bg-current opacity-10" />
+                                                <div className="h-1.5 w-8 rounded-full bg-current opacity-10" />
+                                            </div>
+                                        </div>
+                                        <h3 className="text-3xl font-bold leading-tight tracking-tight" style={{ color: primary }}>Build with {selectedFont.name}.</h3>
+                                        <p className="text-sm opacity-60 leading-relaxed font-sans" style={{ color: primary }}>
+                                            A seamless balance between form and function.
+                                        </p>
+                                        <div className="h-px w-full bg-current opacity-5" />
+                                        <div className="flex gap-2">
+                                            <div className="h-6 w-20 rounded-lg" style={{ backgroundColor: secondary + '20' }} />
+                                            <div className="h-6 w-20 rounded-lg" style={{ backgroundColor: accent + '20' }} />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Stat Box */}
+                                <div className="p-8 rounded-[32px] shadow-xl flex flex-col gap-4 relative overflow-hidden group" style={{ backgroundColor: background }}>
+                                    <div className="absolute inset-0 opacity-10" style={{ backgroundImage: `radial-gradient(circle at 2px 2px, ${primary} 1px, transparent 0)`, backgroundSize: '16px 16px' }} />
+                                    <div className="relative z-10">
+                                        <div className="h-1 w-12 rounded-full mb-4" style={{ backgroundColor: secondary }} />
+                                        <h5 className="text-5xl font-bold leading-none tracking-tighter" style={{ color: primary }}>98.2%</h5>
+                                        <p className="text-[10px] uppercase font-bold tracking-[0.2em] opacity-40 mt-2" style={{ color: primary }}>Design Accuracy</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Column 3: Mobile Identity (Tall) */}
+                            <div className="flex flex-col gap-6 md:gap-8 h-full">
+                                <motion.div
+                                    initial={{ opacity: 0, scale: 0.9 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    transition={{ delay: 0.4 }}
+                                    className="bg-white rounded-[40px] shadow-sm border border-gray-100 p-8 flex flex-col items-center gap-8 text-center relative overflow-hidden h-full min-h-[500px]"
+                                >
+                                    <div className="absolute inset-x-0 top-0 h-40 transition-all" style={{ backgroundColor: background + '40' }} />
+                                    <div className="relative z-10 flex flex-col items-center gap-6 pt-4 w-full">
+                                        <div className="w-24 h-24 rounded-[32px] p-1 shadow-2xl overflow-hidden bg-white ring-8 ring-white/50">
+                                            <img src="https://i.pravatar.cc/150?u=brand" className="w-full h-full object-cover" alt="User" />
+                                        </div>
+                                        <div className="flex flex-col gap-1">
+                                            <h4 className="text-2xl font-bold tracking-tight" style={{ color: primary }}>Official Kit</h4>
+                                            <p className="text-[10px] uppercase font-bold tracking-[0.3em] opacity-40" style={{ color: primary }}>Verified Identity</p>
+                                        </div>
+                                        <div className="flex flex-col gap-3 w-full mt-4">
+                                            <button className="w-full py-4 rounded-2xl text-[10px] font-bold uppercase tracking-[0.2em] shadow-lg transition-all hover:scale-[1.02]" style={{ backgroundColor: primary, color: background }}>View Profile</button>
+                                            <button className="w-full py-4 rounded-2xl text-[10px] font-bold uppercase tracking-[0.2em] border-2 transition-all hover:bg-gray-50" style={{ borderColor: secondary, color: secondary }}>Collaborate</button>
+                                        </div>
+                                    </div>
+                                    <div className="mt-auto w-full flex flex-col gap-4">
+                                        <div className="flex justify-between items-end gap-2 px-2">
+                                            {[40, 70, 100, 60, 85].map((h, i) => (
+                                                <div key={i} className="flex-1 rounded-t-lg opacity-20" style={{ backgroundColor: primary, height: `${h}px` }} />
+                                            ))}
+                                        </div>
+                                        <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
+                                            <div className="h-full w-2/3 rounded-full" style={{ backgroundColor: accent }} />
+                                        </div>
+                                    </div>
+                                </motion.div>
+                            </div>
                         </div>
 
                         {/* Typography Spec Card */}
