@@ -88,11 +88,11 @@ export default function Dashboard() {
           </div>
 
           {/* Mobile Version - Clean Static Typography (No dots) */}
-          <div className="flex md:hidden flex-col gap-0 mb-4">
-            <h1 className="text-[20vw] font-black tracking-tighter uppercase leading-[0.7] text-foreground">
+          <div className="flex md:hidden flex-col gap-[2px] mb-4">
+            <h1 className="text-[20vw] font-black tracking-tighter uppercase leading-[0.75] text-foreground">
               COLOR
             </h1>
-            <h1 className="text-[20vw] font-black tracking-tighter uppercase leading-[0.7] text-foreground">
+            <h1 className="text-[20vw] font-black tracking-tighter uppercase leading-[0.75] text-foreground">
               STUDIO
             </h1>
           </div>
