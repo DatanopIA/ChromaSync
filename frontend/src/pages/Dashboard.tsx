@@ -58,7 +58,14 @@ export default function Dashboard() {
       className="w-full max-w-[1400px] mx-auto px-4 md:px-6 py-12 md:py-20 flex flex-col gap-16 md:gap-24"
     >
       {/* Hero Section */}
-      <section className="flex flex-col gap-8">
+      <section className="flex flex-col gap-8 relative">
+        {/* Mobile Aurora Background - Specifically for Hero Section */}
+        <div className="md:hidden absolute -inset-x-6 -top-32 bottom-0 -z-10 pointer-events-none overflow-hidden opacity-50">
+          <AuroraBackground className="h-full w-full bg-transparent dark:bg-transparent" showRadialGradient={true}>
+            <span className="sr-only">Hero Background Aurora</span>
+          </AuroraBackground>
+        </div>
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

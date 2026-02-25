@@ -25,13 +25,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 
   return (
     <div className="min-h-screen w-full bg-background text-foreground flex flex-col font-sans transition-colors duration-300">
-      <header className="sticky top-0 z-50 w-full bg-background/40 backdrop-blur-xl border-b border-border overflow-hidden">
-        {/* Aurora Background Effect - Only Mobile */}
-        <div className="md:hidden absolute inset-0 -z-10 pointer-events-none">
-          <AuroraBackground className="h-full w-full opacity-[0.2] bg-transparent dark:bg-transparent" showRadialGradient={false}>
-            <span className="sr-only">Aurora Effect</span>
-          </AuroraBackground>
-        </div>
+      <header className="sticky top-0 z-50 w-full bg-background/40 backdrop-blur-xl border-b border-border">
         <div className="max-w-[1400px] mx-auto px-6 h-20 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3 group">
             <Logo size={40} className="group-hover:rotate-6 transition-transform duration-500" />
@@ -152,13 +146,8 @@ export default function Layout({ children }: { children: ReactNode }) {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed right-0 top-0 bottom-0 w-[80%] max-w-sm bg-background z-[70] shadow-2xl p-8 flex flex-col gap-12 overflow-hidden"
+              className="fixed right-0 top-0 bottom-0 w-[80%] max-w-sm bg-background z-[70] shadow-2xl p-8 flex flex-col gap-12"
             >
-              <div className="absolute inset-0 -z-10">
-                <AuroraBackground className="h-full w-full opacity-30 bg-transparent dark:bg-transparent" showRadialGradient={false}>
-                  <span className="sr-only">Menu Aurora</span>
-                </AuroraBackground>
-              </div>
               <div className="flex items-center justify-between">
                 <span className="font-bold text-xl">Menu</span>
                 <button
