@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Settings2, Download, Sparkles, Lock, Unlock, Copy, X, Type, LayoutTemplate, Plus, SlidersHorizontal, Loader2, RefreshCw, Image as ImageIcon } from "lucide-react";
 import { AnimatePresence, motion, Reorder } from "framer-motion";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate, Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useAura } from "../context/AuraContext";
 
@@ -14,8 +14,9 @@ const initialColors = [
 ];
 
 export default function Generator() {
-  const { generatePalette, savePalette } = useAura();
+  const { generatePalette, savePalette, user, signInWithGoogle } = useAura();
   const location = useLocation();
+  const navigate = useNavigate();
   const [colors, setColors] = useState(initialColors);
   const [activeTab, setActiveTab] = useState<"colors" | "mockup">("colors");
   const [prompt, setPrompt] = useState("");
@@ -62,6 +63,13 @@ export default function Generator() {
 
     const targetPrompt = typeof e === 'string' ? e : (prompt.trim() || (imageBase64 ? "Genera una paleta basada en esta imagen" : ""));
     if (!targetPrompt && !imageBase64) return;
+
+    // Check plan limits (for UX feedback)
+    if (user?.plan === 'FREE' && !imageBase64 && prompt.length > 50) {
+      alert("Los prompts detallados son una función PLUS. Por favor, simplifica tu búsqueda o actualiza tu plan.");
+      navigate('/pricing');
+      return;
+    }
 
     setIsGenerating(true);
     try {
@@ -146,16 +154,29 @@ export default function Generator() {
   };
 
   const handleSave = async () => {
+    if (!user) {
+      alert("Necesitas iniciar sesión para guardar paletas.");
+      signInWithGoogle();
+      return;
+    }
+
     try {
-      await savePalette({
+      const result = await savePalette({
         name: prompt || "Nueva Paleta",
         colors: colors.map(c => ({ hex: c.hex, name: c.id }))
       });
-      alert("Paleta guardada ✨");
+
+      const paletteId = result?.savePalette?.id;
+      if (paletteId) {
+        navigate(`/projects/${paletteId}`, { state: { colors: colors.map(c => c.hex), name: prompt } });
+      } else {
+        alert("Paleta guardada ✨");
+      }
     } catch (err: any) {
       console.error("Save error:", err);
       if (err.message?.includes("No autorizado") || err.message?.includes("autenticado")) {
-        alert("Necesitas iniciar sesión para guardar paletas.");
+        alert("Tu sesión ha expirado o no tienes permisos. Por favor, inicia sesión de nuevo.");
+        signInWithGoogle();
       } else {
         alert("Hubo un error al guardar la paleta. Por favor, intenta de nuevo.");
       }
@@ -232,26 +253,26 @@ export default function Generator() {
       className="flex flex-col h-[calc(100vh-80px)] w-full bg-muted transition-colors duration-300"
     >
       {/* Top Toolbar */}
-      <div className="h-16 bg-background border-b border-border flex items-center justify-between px-6 shrink-0 relative z-50">
-        <div className="flex items-center gap-4">
+      <div className="h-auto md:h-16 bg-background border-b border-border flex flex-col md:flex-row items-center justify-between px-4 md:px-6 py-4 md:py-0 shrink-0 relative z-50 gap-4 md:gap-0">
+        <div className="flex items-center gap-2 md:gap-4 w-full md:w-auto overflow-x-auto no-scrollbar pb-1 md:pb-0">
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className={cn("p-2 transition-colors rounded-full transition-all", showFilters ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground hover:bg-muted")}
+            className={cn("p-2 transition-colors rounded-full shrink-0", showFilters ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground hover:bg-muted")}
             aria-label="Ver sensaciones"
             title="Ver sensaciones inteligentes"
           >
             <SlidersHorizontal size={20} />
           </button>
-          <div className="h-4 w-px bg-border"></div>
+          <div className="h-4 w-px bg-border hidden md:block"></div>
 
-          <div className="relative group flex items-center gap-2">
-            <form onSubmit={(e) => handleAIGenerate(e)} className="flex items-center">
+          <div className="relative group flex items-center gap-1 md:gap-2 flex-1 md:flex-none">
+            <form onSubmit={(e) => handleAIGenerate(e)} className="flex items-center flex-1 md:flex-none">
               <input
                 type="text"
                 placeholder="Ej. 'Bosque nevado'..."
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
-                className="bg-muted/50 border-none rounded-l-full pl-6 pr-4 py-2 text-sm w-48 md:w-64 focus:ring-2 focus:ring-foreground/5 outline-none transition-all placeholder:text-muted-foreground text-foreground"
+                className="bg-muted/50 border-none rounded-l-full pl-6 pr-4 py-2 text-sm w-full min-w-[120px] md:w-64 focus:ring-2 focus:ring-foreground/5 outline-none transition-all placeholder:text-muted-foreground text-foreground"
                 aria-label="Buscador de sensaciones"
               />
               <button
@@ -274,7 +295,7 @@ export default function Generator() {
               />
               <label
                 htmlFor="image-upload"
-                className="flex items-center gap-2 bg-muted/50 text-muted-foreground hover:text-foreground px-4 py-2 rounded-r-full text-sm cursor-pointer transition-all border-l border-border/50"
+                className="flex items-center gap-2 bg-muted/50 text-muted-foreground hover:text-foreground px-3 md:px-4 py-2 rounded-r-full text-sm cursor-pointer transition-all border-l border-border/50 shrink-0"
                 title="Generar desde imagen"
               >
                 <ImageIcon size={16} className={isGenerating ? "animate-pulse" : ""} />
@@ -283,51 +304,71 @@ export default function Generator() {
             </div>
           </div>
 
-          <div className="h-4 w-px bg-gray-300 ml-2"></div>
+          <div className="h-4 w-px bg-border hidden md:block ml-2"></div>
 
-          <div className="flex bg-muted/80 rounded-full p-1 border border-border">
+          <div className="flex bg-muted/80 rounded-full p-1 border border-border shrink-0 ml-auto md:ml-0">
             <button
               onClick={() => setActiveTab("colors")}
-              className={cn("px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest transition-all", activeTab === "colors" ? "bg-background shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground")}
+              className={cn("px-3 md:px-4 py-1.5 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-widest transition-all", activeTab === "colors" ? "bg-background shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground")}
             >
               Paleta
             </button>
             <button
               onClick={() => setActiveTab("mockup")}
-              className={cn("px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest transition-all", activeTab === "mockup" ? "bg-background shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground")}
+              className={cn("px-3 md:px-4 py-1.5 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-widest transition-all", activeTab === "mockup" ? "bg-background shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground")}
             >
               Preview
             </button>
           </div>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 md:gap-4 w-full md:w-auto justify-end">
           <button
             onClick={handleManualGenerate}
-            className="hidden md:flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors px-4 py-2 rounded-full hover:bg-muted"
+            className="flex items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors px-3 py-2 rounded-full hover:bg-muted"
             aria-label="Generación aleatoria"
             title="Generación aleatoria"
           >
             <RefreshCw size={14} className={isGenerating ? "animate-spin" : ""} />
-            Aleatorio
+            <span className="hidden sm:inline">Aleatorio</span>
           </button>
           <button
             onClick={handleExportPNG}
-            className="flex items-center gap-2 px-4 py-2.5 bg-muted hover:bg-muted/80 text-foreground rounded-full text-xs font-bold uppercase tracking-widest transition-all border border-border"
+            className="flex items-center justify-center gap-2 px-3 md:px-4 py-2.5 bg-muted hover:bg-muted/80 text-foreground rounded-full text-[10px] font-bold uppercase tracking-widest transition-all border border-border"
             title="Exportar como PNG"
           >
             <Download size={14} />
-            PNG
+            <span className="hidden sm:inline">PNG</span>
+          </button>
+          <button
+            onClick={() => navigate('/brandkit', { state: { colors: colors.map(c => c.hex), name: prompt } })}
+            className="flex items-center justify-center gap-2 px-3 md:px-4 py-2.5 bg-violet-50 hover:bg-violet-100 text-violet-600 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all border border-violet-100"
+            title="Abrir en Brand Kit editor"
+          >
+            <LayoutTemplate size={14} />
+            <span className="hidden sm:inline">Remix</span>
           </button>
           <button
             onClick={handleSave}
-            className="group relative px-6 py-2.5 bg-black text-white rounded-full text-xs font-bold uppercase tracking-widest shadow-xl shadow-black/10 hover:bg-gray-800 transition-all flex items-center gap-2"
+            className="group relative px-4 md:px-6 py-2.5 bg-black text-white rounded-full text-[10px] font-bold uppercase tracking-widest shadow-xl shadow-black/10 hover:bg-gray-800 transition-all flex items-center gap-2"
           >
             <Sparkles size={14} className="group-hover:rotate-12 transition-transform" />
             Guardar
           </button>
         </div>
       </div>
+
+      <AnimatePresence>
+        {user?.plan === 'FREE' && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            className="bg-amber-100 border-b border-amber-200 px-6 py-1.5 flex items-center justify-center gap-2 text-[10px] font-bold text-amber-800 uppercase tracking-widest overflow-hidden"
+          >
+            <Sparkles size={10} /> Estás usando la versión gratuita. <Link to="/pricing" className="underline hover:text-amber-900 ml-1">Actualiza a Plus para funciones ilimitadas</Link>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Sensation Pills Bar */}
       <AnimatePresence>
@@ -356,19 +397,19 @@ export default function Generator() {
       {/* Main Area */}
       <main className="flex-1 overflow-hidden relative">
         {activeTab === "colors" ? (
-          <div className="h-full w-full p-6 md:p-12 flex items-center justify-center">
-            <div className="w-full h-full max-h-[70vh] flex gap-4">
+          <div className="h-full w-full p-4 md:p-8 lg:p-12 flex items-center justify-center">
+            <div className="w-full h-full max-h-[85vh] md:max-h-[70vh] flex flex-col md:flex-row gap-2 md:gap-4 overflow-y-auto no-scrollbar py-4">
               <Reorder.Group
-                axis="x"
+                axis={window.innerWidth < 768 ? "y" : "x"}
                 values={colors}
                 onReorder={setColors}
-                className="flex flex-1 gap-4 h-full"
+                className="flex flex-col md:flex-row flex-1 gap-2 md:gap-4 h-full min-h-[500px] md:min-h-0"
               >
                 {colors.map((color) => (
                   <Reorder.Item
                     key={color.id}
                     value={color}
-                    className="flex-1 h-full relative group cursor-grab active:cursor-grabbing rounded-2xl overflow-hidden shadow-sm border border-gray-100/50"
+                    className="flex-1 min-h-[80px] md:h-full relative group cursor-grab active:cursor-grabbing rounded-xl md:rounded-2xl overflow-hidden shadow-sm border border-gray-100/50"
                     style={{ backgroundColor: color.hex }}
                   >
                     {/* Controls Overlay */}
@@ -404,7 +445,7 @@ export default function Generator() {
               {colors.length < 8 && (
                 <button
                   onClick={addColor}
-                  className="h-full w-16 rounded-2xl border-2 border-dashed border-gray-300 flex items-center justify-center text-gray-400 hover:text-black hover:border-gray-400 hover:bg-gray-50 transition-all"
+                  className="h-16 md:h-full w-full md:w-16 rounded-xl md:rounded-2xl border-2 border-dashed border-gray-300 flex items-center justify-center text-gray-400 hover:text-black hover:border-gray-400 hover:bg-gray-50 transition-all shrink-0"
                   aria-label="Añadir color"
                   title="Añadir color"
                 >
@@ -414,15 +455,15 @@ export default function Generator() {
             </div>
           </div>
         ) : (
-          <div className="h-full w-full p-6 md:p-12 overflow-y-auto flex justify-center">
+          <div className="h-full w-full p-4 md:p-12 overflow-y-auto flex justify-center">
             {/* Minimalist Mockup Preview */}
             <div
-              className="w-full max-w-4xl rounded-3xl p-12 md:p-20 shadow-xl transition-colors duration-500"
+              className="w-full max-w-4xl rounded-2xl md:rounded-3xl p-8 md:p-20 shadow-xl transition-colors duration-500"
               style={{ backgroundColor: colors[0]?.hex || "#fff", color: colors[colors.length - 1]?.hex || "#000" }}
             >
-              <nav className="flex justify-between items-center mb-24">
-                <div className="font-semibold text-xl tracking-tight">Studio.</div>
-                <div className="flex gap-8 text-sm font-medium opacity-80">
+              <nav className="flex justify-between items-center mb-12 md:mb-24">
+                <div className="font-semibold text-lg md:text-xl tracking-tight">Studio.</div>
+                <div className="hidden sm:flex gap-4 md:gap-8 text-xs md:text-sm font-medium opacity-80">
                   <span>Trabajo</span>
                   <span>Sobre nosotros</span>
                   <span>Contacto</span>
@@ -430,16 +471,16 @@ export default function Generator() {
               </nav>
 
               <div className="max-w-2xl">
-                <h1 className="text-5xl md:text-7xl font-medium leading-[1.1] tracking-tight mb-8">
+                <h1 className="text-4xl md:text-7xl font-medium leading-[1.1] tracking-tight mb-6 md:mb-8">
                   Diseñando el futuro de las experiencias digitales.
                 </h1>
-                <p className="text-xl mb-12 opacity-70 max-w-lg leading-relaxed">
+                <p className="text-lg md:text-xl mb-8 md:mb-12 opacity-70 max-w-lg leading-relaxed">
                   Somos una agencia creativa enfocada en construir productos elegantes, minimalistas y altamente funcionales.
                 </p>
 
                 <div className="flex gap-4">
                   <button
-                    className="px-8 py-4 rounded-full font-medium text-sm transition-transform hover:scale-105"
+                    className="px-6 md:px-8 py-3 md:py-4 rounded-full font-medium text-xs md:text-sm transition-transform hover:scale-105"
                     style={{ backgroundColor: colors[colors.length - 1]?.hex || "#000", color: colors[0]?.hex || "#fff" }}
                   >
                     Ver Proyectos
@@ -447,7 +488,7 @@ export default function Generator() {
                 </div>
               </div>
 
-              <div className="mt-32 grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="mt-16 md:mt-32 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
                 {[1, 2].map((idx) => (
                   colors[idx] && (
                     <div

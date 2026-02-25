@@ -33,11 +33,28 @@ model User {
   badges               UserBadge[]
   activityLogs         ActivityLog[]   @relation("UserLogs")
   comments             Comment[]
+  notifications        Notification[]
   invitedCollaborations Collaboration[] @relation("InvitedBy")
   createdAt            DateTime        @default(now()) @map("created_at")
   updatedAt            DateTime        @updatedAt @map("updated_at")
 
   @@map("users")
+}
+
+// ... (resto de modelos)
+
+model Notification {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @map("user_id")
+  type      String   // 'INVITE', 'COMMENT', 'SYSTEM'
+  title     String
+  message   String
+  read      Boolean  @default(false)
+  link      String?  // Enlace opcional al recurso
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("notifications")
 }
 
 model Palette {

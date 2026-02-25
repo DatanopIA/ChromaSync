@@ -3,7 +3,6 @@ import { ArrowRight, Sparkles, Image, Eye, Download, Briefcase, Globe } from "lu
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { MagneticText } from "@/components/ui/morphing-cursor";
-import Footer from "@/components/Footer";
 
 const categories = [
   {
@@ -55,7 +54,7 @@ export default function Dashboard() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.8 }}
-      className="w-full max-w-[1400px] mx-auto px-6 py-12 md:py-20 flex flex-col gap-24"
+      className="w-full max-w-[1400px] mx-auto px-4 md:px-6 py-12 md:py-20 flex flex-col gap-16 md:gap-24"
     >
       {/* Hero Section */}
       <section className="flex flex-col gap-8">
@@ -67,14 +66,14 @@ export default function Dashboard() {
           <MagneticText
             text="COLOR"
             hoverText="CREATE"
-            className="text-[12vw] md:text-[8vw] font-black tracking-tighter uppercase"
-            circleSize={200}
+            className="text-[14vw] md:text-[8vw] font-black tracking-tighter uppercase"
+            circleSize={window.innerWidth < 768 ? 120 : 200}
           />
           <MagneticText
             text="STUDIO"
             hoverText="DESIGN"
-            className="text-[12vw] md:text-[8vw] font-black tracking-tighter uppercase"
-            circleSize={200}
+            className="text-[14vw] md:text-[8vw] font-black tracking-tighter uppercase"
+            circleSize={window.innerWidth < 768 ? 120 : 200}
           />
         </motion.div>
 
@@ -85,7 +84,7 @@ export default function Dashboard() {
             transition={{ delay: 0.1 }}
             className="flex flex-col gap-6"
           >
-            <h2 className="text-3xl md:text-4xl font-medium leading-tight h-[2.5em] md:h-auto">
+            <h2 className="text-2xl md:text-4xl font-medium leading-tight h-[3em] md:h-auto">
               {activeCategory.description}
             </h2>
             <p className="text-muted-foreground text-lg max-w-md leading-relaxed">
@@ -135,7 +134,7 @@ export default function Dashboard() {
               </motion.div>
             </AnimatePresence>
 
-            <div className="absolute bottom-8 left-8 right-8 glass-dark rounded-2xl p-6 flex flex-col gap-6 backdrop-blur-2xl border border-white/10 overflow-hidden">
+            <div className="absolute bottom-4 md:bottom-8 left-4 md:left-8 right-4 md:right-8 glass-dark rounded-2xl p-4 md:p-6 flex flex-col gap-4 md:gap-6 backdrop-blur-2xl border border-white/10 overflow-hidden">
               {/* Floating shine effect */}
               <motion.div
                 animate={{ x: ['-100%', '200%'] }}
@@ -161,16 +160,16 @@ export default function Dashboard() {
                   ))}
                 </AnimatePresence>
               </div>
-              <div className="flex justify-between items-center text-white relative z-10">
+              <div className="flex justify-between items-center text-white relative z-10 gap-2">
                 <div className="flex flex-col">
-                  <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/50 mb-1">Concept Studio</span>
-                  <span className="font-medium text-lg">{activeCategory.name} Vision</span>
+                  <span className="text-[8px] md:text-[10px] font-bold uppercase tracking-[0.2em] text-white/50 mb-1">Concept Studio</span>
+                  <span className="font-medium text-base md:text-lg">{activeCategory.name} Vision</span>
                 </div>
                 <button
                   onClick={() => navigate("/brandkit", { state: { colors: activeCategory.palette, name: activeCategory.name } })}
-                  className="text-xs bg-white text-black px-6 py-2.5 rounded-full font-bold uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-xl"
+                  className="text-[10px] md:text-xs bg-white text-black px-4 md:px-6 py-2 md:py-2.5 rounded-full font-bold uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-xl whitespace-nowrap"
                 >
-                  Remixear Paleta
+                  Remixear
                 </button>
               </div>
             </div>
@@ -339,9 +338,9 @@ export default function Dashboard() {
             <MagneticText
               text="CREA TU IDENTIDAD VISUAL"
               hoverText="DISEÑA TU FUTURO DIGITAL"
-              className="text-4xl md:text-5xl lg:text-7xl font-medium tracking-tight text-center max-w-4xl"
+              className="text-3xl md:text-5xl lg:text-7xl font-medium tracking-tight text-center max-w-4xl"
               variant="inverted"
-              circleSize={300}
+              circleSize={window.innerWidth < 768 ? 150 : 300}
             />
           </motion.div>
 
@@ -350,7 +349,7 @@ export default function Dashboard() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-white/60 text-lg md:text-2xl max-w-3xl leading-relaxed font-light"
+            className="text-white/60 text-base md:text-2xl max-w-3xl leading-relaxed font-light"
           >
             Accede a generación ilimitada por IA, exportación en alta resolución y herramientas exclusivas diseñadas para elevar tu flujo de trabajo al estándar de la industria.
           </motion.p>
@@ -364,7 +363,7 @@ export default function Dashboard() {
           >
             <Link
               to="/pricing"
-              className="group relative inline-flex items-center gap-6 bg-white text-black px-16 py-8 rounded-full font-bold uppercase tracking-[0.2em] text-sm hover:scale-105 active:scale-95 transition-all duration-300 shadow-[0_20px_50px_rgba(255,255,255,0.15)]"
+              className="group relative inline-flex items-center gap-4 md:gap-6 bg-white text-black px-8 md:px-16 py-6 md:py-8 rounded-full font-bold uppercase tracking-[0.2em] text-xs md:text-sm hover:scale-105 active:scale-95 transition-all duration-300 shadow-[0_20px_50px_rgba(255,255,255,0.15)]"
             >
               Comenzar ahora
               <ArrowRight className="group-hover:translate-x-3 transition-transform duration-300" size={20} />
@@ -372,8 +371,6 @@ export default function Dashboard() {
           </motion.div>
         </div>
       </section>
-
-      <Footer />
     </motion.div>
   );
 }

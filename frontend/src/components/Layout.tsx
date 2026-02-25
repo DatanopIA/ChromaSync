@@ -4,6 +4,9 @@ import { cn } from "@/lib/utils";
 import { Menu, X, User as UserIcon, LogIn, Sparkles } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAura } from "../context/AuraContext";
+import NotificationBell from "./NotificationBell";
+import Footer from "./Footer";
+import Logo from "./Logo";
 
 const navItems = [
   { name: "Dashboard", path: "/" },
@@ -21,13 +24,10 @@ export default function Layout({ children }: { children: ReactNode }) {
 
   return (
     <div className="min-h-screen w-full bg-background text-foreground flex flex-col font-sans transition-colors duration-300">
-      {/* Top Navigation */}
       <header className="sticky top-0 z-50 w-full bg-background/40 backdrop-blur-xl border-b border-border">
         <div className="max-w-[1400px] mx-auto px-6 h-20 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 group">
-            <div className="w-8 h-8 bg-foreground rounded-lg flex items-center justify-center group-hover:rotate-12 transition-transform duration-300 shadow-lg shadow-black/10">
-              <Sparkles size={16} className="text-background" />
-            </div>
+          <Link to="/" className="flex items-center gap-3 group">
+            <Logo size={40} className="group-hover:rotate-6 transition-transform duration-500" />
             <span className="font-bold text-xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-foreground via-foreground/70 to-foreground">ChromaSync</span>
           </Link>
 
@@ -82,19 +82,22 @@ export default function Layout({ children }: { children: ReactNode }) {
 
           <div className="hidden md:flex items-center gap-6">
             {user ? (
-              <Link to="/settings" className="flex items-center gap-2 group transition-all">
-                <div className="relative p-0.5 rounded-full bg-gradient-to-tr from-orange-400 via-pink-500 to-blue-500 group-hover:scale-105 transition-transform duration-300">
-                  <img
-                    src={user.user_metadata.avatar_url || "https://picsum.photos/seed/avatar/100/100"}
-                    className="w-8 h-8 rounded-full border-2 border-white object-cover"
-                    referrerPolicy="no-referrer"
-                    alt="User avatar"
-                  />
-                </div>
-                <span className="text-sm font-bold text-gray-500 group-hover:text-black transition-colors hidden lg:inline">
-                  {user.user_metadata.full_name?.split(' ')[0]}
-                </span>
-              </Link>
+              <div className="flex items-center gap-4">
+                <NotificationBell />
+                <Link to="/settings" className="flex items-center gap-2 group transition-all">
+                  <div className="relative p-0.5 rounded-full bg-gradient-to-tr from-orange-400 via-pink-500 to-blue-500 group-hover:scale-105 transition-transform duration-300">
+                    <img
+                      src={user.user_metadata.avatar_url || "https://picsum.photos/seed/avatar/100/100"}
+                      className="w-8 h-8 rounded-full border-2 border-white object-cover"
+                      referrerPolicy="no-referrer"
+                      alt="User avatar"
+                    />
+                  </div>
+                  <span className="text-sm font-bold text-gray-500 group-hover:text-black transition-colors hidden lg:inline">
+                    {user.user_metadata.full_name?.split(' ')[0]}
+                  </span>
+                </Link>
+              </div>
             ) : (
               <button
                 onClick={signInWithGoogle}
@@ -203,6 +206,8 @@ export default function Layout({ children }: { children: ReactNode }) {
       <main className="flex-1 flex flex-col">
         {children}
       </main>
+
+      <Footer />
     </div>
   );
 }

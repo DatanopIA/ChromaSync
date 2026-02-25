@@ -1,8 +1,10 @@
 import { motion } from "framer-motion";
 import { CheckCircle2, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useAura } from "../context/AuraContext";
 
 export default function Success() {
+    const { simulatePlanUpgrade } = useAura();
     return (
         <div className="min-h-full w-full flex items-center justify-center p-6 bg-[#fcfcfc]">
             <motion.div
@@ -37,6 +39,28 @@ export default function Success() {
                 >
                     Volver al Inicio
                 </Link>
+
+                {/* Developer simulation buttons */}
+                <div className="flex gap-2 mt-4 pt-10">
+                    <button
+                        onClick={() => simulatePlanUpgrade('PLUS')}
+                        className="text-[10px] uppercase font-bold tracking-widest text-amber-600 bg-amber-50 px-3 py-1 rounded-full hover:bg-amber-100 transition-colors"
+                    >
+                        Simular PLUS
+                    </button>
+                    <button
+                        onClick={() => simulatePlanUpgrade('PRO')}
+                        className="text-[10px] uppercase font-bold tracking-widest text-violet-600 bg-violet-50 px-3 py-1 rounded-full hover:bg-violet-100 transition-colors"
+                    >
+                        Simular PRO
+                    </button>
+                    <button
+                        onClick={() => simulatePlanUpgrade('FREE')}
+                        className="text-[10px] uppercase font-bold tracking-widest text-gray-600 bg-gray-50 px-3 py-1 rounded-full hover:bg-gray-100 transition-colors"
+                    >
+                        Reset FREE
+                    </button>
+                </div>
             </motion.div>
         </div>
     );

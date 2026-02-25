@@ -126,27 +126,27 @@ export default function About() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8 }}
-                className="relative z-10 w-full max-w-[1000px] mx-auto px-6 py-20 flex flex-col gap-24 font-sans"
+                className="relative z-10 w-full max-w-[1000px] mx-auto px-4 md:px-6 py-12 md:py-20 flex flex-col gap-16 md:gap-24 font-sans"
             >
                 {/* Hero Section */}
-                <section className="flex flex-col items-center text-center gap-6">
+                <section className="flex flex-col items-center text-center gap-4 md:gap-6">
                     <motion.span
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        className="px-4 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-widest border border-primary/20"
+                        className="px-4 py-1.5 rounded-full bg-primary/10 text-primary text-[10px] md:text-xs font-bold uppercase tracking-widest border border-primary/20"
                     >
                         Nuestra Historia
                     </motion.span>
-                    <h1 className="text-5xl md:text-7xl font-bold tracking-tight">
-                        Democratizando la <span className="bg-foreground text-background px-6 py-2 rounded-2xl italic inline-block transform -rotate-1 shadow-2xl">Inteligencia</span>
+                    <h1 className="text-4xl md:text-7xl font-bold tracking-tight">
+                        Democratizando la <span className="bg-foreground text-background px-4 md:px-6 py-1 md:py-2 rounded-xl md:rounded-2xl italic inline-block transform -rotate-1 shadow-2xl">Inteligencia</span>
                     </h1>
-                    <p className="text-xl text-muted-foreground max-w-2xl leading-relaxed">
+                    <p className="text-lg md:text-xl text-muted-foreground max-w-2xl leading-relaxed">
                         En DatanopIA, no solo construimos software; creamos puentes entre la complejidad tecnológica y la expresión humana.
                     </p>
                 </section>
 
                 {/* Storytelling Section */}
-                <section className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center bg-white/40 backdrop-blur-xl rounded-[3rem] p-12 md:p-20 border border-border/50 shadow-sm">
+                <section className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-center bg-white/40 backdrop-blur-xl rounded-[2rem] md:rounded-[3rem] p-8 md:p-20 border border-border/50 shadow-sm">
                     <div className="flex flex-col gap-8">
                         <h2 className="text-3xl font-bold">El origen de una visión</h2>
                         <div className="flex flex-col gap-4 text-lg text-muted-foreground leading-relaxed">
@@ -172,13 +172,13 @@ export default function About() {
                 </section>
 
                 {/* Values Grid */}
-                <section className="flex flex-col gap-12">
+                <section className="flex flex-col gap-8 md:gap-12">
                     <div className="text-center flex flex-col gap-2">
-                        <h2 className="text-3xl font-bold italic uppercase tracking-tighter">Nuestros Valores</h2>
-                        <p className="text-muted-foreground">Lo que nos impulsa a innovar cada día.</p>
+                        <h2 className="text-2xl md:text-3xl font-bold italic uppercase tracking-tighter">Nuestros Valores</h2>
+                        <p className="text-muted-foreground text-sm md:text-base">Lo que nos impulsa a innovar cada día.</p>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
                         {[
                             {
                                 title: "Simplicidad Radical",
@@ -186,12 +186,12 @@ export default function About() {
                                 icon: <Sparkles className="w-8 h-8 text-purple-500" />
                             },
                             {
-                                title: "IA con Propósito",
+                                title: "IA with Purpose",
                                 desc: "Usamos la inteligencia artificial para amplificar la creatividad humana, no para limitarla.",
                                 icon: <Target className="w-8 h-8 text-blue-500" />
                             },
                             {
-                                title: "Acceso Universal",
+                                title: "Universal Access",
                                 desc: "Soluciones de grado industrial adaptadas para todos los presupuestos y niveles de habilidad.",
                                 icon: <ShieldCheck className="w-8 h-8 text-green-500" />
                             }
@@ -202,22 +202,22 @@ export default function About() {
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
                                 transition={{ delay: i * 0.1 }}
-                                className="p-8 rounded-[2rem] bg-white/60 backdrop-blur-md border border-border shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300"
+                                className="p-6 md:p-8 rounded-[1.5rem] md:rounded-[2rem] bg-white/60 backdrop-blur-md border border-border shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300"
                             >
-                                <div className="mb-6 p-4 bg-muted w-fit rounded-2xl">{v.icon}</div>
-                                <h3 className="text-xl font-bold mb-3">{v.title}</h3>
-                                <p className="text-muted-foreground leading-relaxed">{v.desc}</p>
+                                <div className="mb-4 md:mb-6 p-3 md:p-4 bg-muted w-fit rounded-2xl">{v.icon}</div>
+                                <h3 className="text-xl font-bold mb-2 md:mb-3">{v.title}</h3>
+                                <p className="text-muted-foreground leading-relaxed text-sm md:text-base">{v.desc}</p>
                             </motion.div>
                         ))}
                     </div>
                 </section>
 
                 {/* CTA Section */}
-                <section className="bg-foreground text-background rounded-[3rem] p-12 md:p-20 text-center flex flex-col items-center gap-8 shadow-2xl overflow-hidden relative group">
+                <section className="bg-foreground text-background rounded-[2rem] md:rounded-[3rem] p-8 md:p-20 text-center flex flex-col items-center gap-6 md:gap-8 shadow-2xl overflow-hidden relative group">
                     <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    <Heart className="w-12 h-12 text-primary animate-pulse relative z-10" />
-                    <h2 className="text-4xl font-medium tracking-tight relative z-10">¿Te unes a la revolución?</h2>
-                    <p className="text-background/60 text-lg max-w-xl relative z-10">
+                    <Heart className="w-10 h-10 md:w-12 md:h-12 text-primary animate-pulse relative z-10" />
+                    <h2 className="text-3xl md:text-4xl font-medium tracking-tight relative z-10">¿Te unes a la revolución?</h2>
+                    <p className="text-background/60 text-base md:text-lg max-w-xl relative z-10">
                         Estamos aquí para ayudarte a brillar. DatanopIA es tu socio tecnológico, hoy y en el futuro que estamos diseñando juntos.
                     </p>
                 </section>

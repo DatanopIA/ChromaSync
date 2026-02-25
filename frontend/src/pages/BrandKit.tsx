@@ -1,7 +1,9 @@
-import { useParams, Link, useLocation } from "react-router-dom";
+import { useParams, Link, useLocation, useNavigate } from "react-router-dom";
+import { useAura } from "../context/AuraContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Download, RefreshCw, Type, Layout, Palette, Check, Upload, Trash2, ExternalLink, FileText, Code, Share2, Globe, Copy as CopyIcon, Layers } from "lucide-react";
 import { useState, useEffect, useRef, ChangeEvent } from "react";
+import { cn } from "@/lib/utils";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 
@@ -24,13 +26,17 @@ const googleFonts = [
 ];
 
 export default function BrandKit() {
+    const { user, savePalette, getPalette, signInWithGoogle, deletePalette } = useAura();
     const { id } = useParams();
     const location = useLocation();
+    const navigate = useNavigate();
     const initialProject = projects.find(p => p.id === Number(id)) || projects[0];
 
     // Check if we have a remix in state
     const isRemix = !!location.state?.colors;
     const currentProject = isRemix ? { ...initialProject, colors: location.state.colors, name: location.state.name || "Remix Palette" } : initialProject;
+
+    const [paletteColors, setPaletteColors] = useState<string[]>(currentProject.colors);
 
     // Color states
     const [activeCombo, setActiveCombo] = useState(0);
@@ -44,9 +50,10 @@ export default function BrandKit() {
         if (location.state?.colors) {
             setPrimary(location.state.colors[0]);
             setSecondary(location.state.colors[1]);
-            setBackground(location.state.colors[4] || "#FFFFFF");
             setAccent(location.state.colors[2]);
+            setBackground(location.state.colors[4] || "#FFFFFF");
             setKitName(location.state.name || "Remix Palette");
+            setPaletteColors(location.state.colors);
         }
     }, [location.state]);
 
@@ -61,9 +68,35 @@ export default function BrandKit() {
     const [isExportModalOpen, setIsExportModalOpen] = useState(false);
     const [kitName, setKitName] = useState(currentProject.name);
     const [isSaving, setIsSaving] = useState(false);
+    const [isLoadingPalette, setIsLoadingPalette] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
     const [successMessage, setSuccessMessage] = useState("");
     const [exportType, setExportType] = useState<string | null>(null);
+
+    // Load palette from DB if ID is provided and it's not a remix
+    useEffect(() => {
+        const loadRealPalette = async () => {
+            if (id && !isRemix && id.length > 5) { // IDs de base de datos suelen ser más largos que los mock IDs (1-6)
+                setIsLoadingPalette(true);
+                try {
+                    const data = await getPalette(id);
+                    if (data) {
+                        setPrimary(data.colors[0]?.hex || "#000000");
+                        setSecondary(data.colors[1]?.hex || "#000000");
+                        setAccent(data.colors[2]?.hex || "#000000");
+                        setBackground(data.colors[4]?.hex || "#FFFFFF");
+                        setKitName(data.name);
+                        setPaletteColors(data.colors.map((c: any) => c.hex));
+                    }
+                } catch (error) {
+                    console.error("Error loading palette from DB:", error);
+                } finally {
+                    setIsLoadingPalette(false);
+                }
+            }
+        };
+        loadRealPalette();
+    }, [id, isRemix, getPalette]);
 
     // Inject Google Fonts
     useEffect(() => {
@@ -75,6 +108,11 @@ export default function BrandKit() {
     }, []);
 
     const handleFileUpload = (e: ChangeEvent<HTMLInputElement>) => {
+        if (user?.plan === 'FREE') {
+            alert("La subida de tipografías personalizadas es una función PLUS. Por favor, actualiza tu plan.");
+            navigate('/pricing');
+            return;
+        }
         const file = e.target.files?.[0];
         if (file) {
             const reader = new FileReader();
@@ -99,16 +137,53 @@ export default function BrandKit() {
         return (yiq >= 128) ? '#000000' : '#ffffff';
     }
 
-    const handleSave = () => {
+    const handleSave = async () => {
         if (!kitName.trim()) return;
+
+        if (!user) {
+            alert("Debes iniciar sesión para guardar tu Brand Kit en la nube.");
+            signInWithGoogle();
+            return;
+        }
+
         setIsSaving(true);
-        // Simulate API call
-        setTimeout(() => {
+        try {
+            await savePalette({
+                name: kitName,
+                colors: [
+                    { hex: primary, name: "Primary" },
+                    { hex: secondary, name: "Secondary" },
+                    { hex: background, name: "Background" },
+                    { hex: accent, name: "Accent" }
+                ],
+                // Metadata adicional para el Kit
+                typography_suggestion: {
+                    heading: selectedFont.name,
+                    body: selectedFont.name
+                }
+            } as any); // Cast as any a esperar que la API ignore o acepte la tipografía si lo extendemos
+
             setIsSaving(false);
             setIsSaveModalOpen(false);
+            setSuccessMessage(`¡Brand Kit "${kitName}" guardado con éxito!`);
             setShowSuccess(true);
-            setTimeout(() => setShowSuccess(false), 3000);
-        }, 1500);
+
+            // Efecto de celebración
+            import('canvas-confetti').then(confetti => {
+                confetti.default({
+                    particleCount: 150,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: [primary, secondary, accent]
+                });
+            });
+
+            setTimeout(() => setShowSuccess(false), 4000);
+        } catch (error) {
+            console.error("Save error:", error);
+            alert("Hubo un error al intentar guardar en la nube. Por favor, inténtalo de nuevo.");
+            setIsSaving(false);
+        }
     };
 
     const downloadCode = (type: 'css' | 'json') => {
@@ -130,6 +205,13 @@ export default function BrandKit() {
     };
 
     const handleExport = async (type: string) => {
+        // Gates for FREE users
+        if (user?.plan === 'FREE' && ['pdf', 'canva', 'figma'].includes(type)) {
+            alert("Las exportaciones avanzadas (PDF, Canva, Figma) son exclusivas para usuarios PLUS y PRO.");
+            navigate('/pricing');
+            return;
+        }
+
         setExportType(type);
         setIsSaving(true);
 
@@ -195,7 +277,7 @@ export default function BrandKit() {
     };
 
     const shuffleColors = () => {
-        const shuffled = [...currentProject.colors].sort(() => Math.random() - 0.5);
+        const shuffled = [...paletteColors].sort(() => Math.random() - 0.5);
         setPrimary(shuffled[0]);
         setSecondary(shuffled[1]);
         setBackground(shuffled[4] || "#FFFFFF");
@@ -206,35 +288,55 @@ export default function BrandKit() {
     return (
         <div className="w-full min-h-screen bg-white" style={{ fontFamily: selectedFont.family }}>
             {/* Top Nav */}
-            <div className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-gray-100 px-6 h-20 flex items-center justify-between font-sans">
-                <div className="flex items-center gap-6">
-                    <Link to="/projects" className="p-2 hover:bg-gray-50 rounded-full transition-colors">
-                        <ArrowLeft size={20} />
+            <div className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-gray-100 h-20 flex items-center justify-between font-sans">
+                <div className="max-w-[1400px] mx-auto px-6 h-full flex items-center justify-between">
+                    <Link to="/" className="flex items-center gap-2 group">
+                        <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
+                        <span className="font-bold text-sm uppercase tracking-widest hidden sm:inline">Back</span>
                     </Link>
-                    <div className="flex flex-col">
-                        <h1 className="font-bold text-lg">{currentProject.name}</h1>
-                        <span className="text-xs text-gray-400 uppercase tracking-widest font-bold">Brand Kit Creator</span>
+
+                    <div className="flex items-center gap-2 md:gap-4">
+                        <button
+                            onClick={shuffleColors}
+                            className="flex items-center gap-2 px-3 md:px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-black rounded-full text-xs md:text-sm font-bold transition-all active:scale-95"
+                            title="Shuffle Layout"
+                        >
+                            <RefreshCw size={16} /> <span className="hidden sm:inline">Shuffle</span>
+                        </button>
+                        <button
+                            onClick={() => setIsExportModalOpen(true)}
+                            className="flex items-center gap-2 px-3 md:px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-black rounded-full text-xs md:text-sm font-bold transition-all active:scale-95"
+                            title="Export"
+                        >
+                            <Download size={16} /> <span className="hidden sm:inline">Export</span>
+                        </button>
+                        <button
+                            onClick={() => setIsSaveModalOpen(true)}
+                            className="flex items-center gap-2 px-4 md:px-6 py-2.5 bg-black text-white rounded-full text-xs md:text-sm font-bold shadow-xl shadow-black/10 hover:bg-gray-800 transition-all active:scale-95"
+                            title="Save Kit"
+                        >
+                            <Check size={16} /> <span className="hidden sm:inline">Save Kit</span>
+                            <span className="sm:hidden">Save</span>
+                        </button>
+                        {id && id !== 'new' && (
+                            <button
+                                onClick={async () => {
+                                    if (confirm("¿Estás seguro de que quieres borrar este Brand Kit?")) {
+                                        try {
+                                            await deletePalette(id);
+                                            navigate('/projects');
+                                        } catch (err) {
+                                            alert("Error al borrar el kit.");
+                                        }
+                                    }
+                                }}
+                                className="p-2.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-all active:scale-95"
+                                title="Borrar este kit"
+                            >
+                                <Trash2 size={18} />
+                            </button>
+                        )}
                     </div>
-                </div>
-                <div className="flex items-center gap-4">
-                    <button
-                        onClick={shuffleColors}
-                        className="flex items-center gap-2 px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-black rounded-full text-sm font-bold transition-all active:scale-95"
-                    >
-                        <RefreshCw size={16} /> Shuffle Layout
-                    </button>
-                    <button
-                        onClick={() => setIsExportModalOpen(true)}
-                        className="flex items-center gap-2 px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-black rounded-full text-sm font-bold transition-all active:scale-95"
-                    >
-                        <Download size={16} /> Export
-                    </button>
-                    <button
-                        onClick={() => setIsSaveModalOpen(true)}
-                        className="flex items-center gap-2 px-6 py-2.5 bg-black text-white rounded-full text-sm font-bold shadow-xl shadow-black/10 hover:bg-gray-800 transition-all active:scale-95"
-                    >
-                        <Check size={16} /> Save Kit
-                    </button>
                 </div>
             </div>
 
@@ -346,18 +448,18 @@ export default function BrandKit() {
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     {[
-                                        { id: 'pdf', name: 'Brand Guide (PDF)', icon: <FileText size={20} />, desc: 'Full aesthetic documentation.' },
-                                        { id: 'canva', name: 'Canva Layout', icon: <Layers size={20} />, desc: 'Ready for social media.' },
-                                        { id: 'figma', name: 'Figma Tokens', icon: <Share2 size={20} />, desc: 'For professional designers.' },
-                                        { id: 'css', name: 'CSS Variables', icon: <Code size={20} />, desc: 'Implementation ready.' },
-                                        { id: 'json', name: 'JSON Data', icon: <Globe size={20} />, desc: 'For custom API integration.' },
-                                        { id: 'copy', name: 'Copy Assets', icon: <CopyIcon size={20} />, desc: 'Paste directly anywhere.' },
+                                        { id: 'pdf', name: 'Brand Guide (PDF)', icon: <FileText size={20} />, desc: 'Full aesthetic documentation.', premium: true },
+                                        { id: 'canva', name: 'Canva Layout', icon: <Layers size={20} />, desc: 'Ready for social media.', premium: true },
+                                        { id: 'figma', name: 'Figma Tokens', icon: <Share2 size={20} />, desc: 'For professional designers.', premium: true },
+                                        { id: 'css', name: 'CSS Variables', icon: <Code size={20} />, desc: 'Implementation ready.', premium: false },
+                                        { id: 'json', name: 'JSON Data', icon: <Globe size={20} />, desc: 'For custom API integration.', premium: false },
+                                        { id: 'copy', name: 'Copy Assets', icon: <CopyIcon size={20} />, desc: 'Paste directly anywhere.', premium: false },
                                     ].map((opt) => (
                                         <button
                                             key={opt.id}
                                             onClick={() => handleExport(opt.id)}
                                             disabled={isSaving && exportType !== opt.id}
-                                            className={`p-6 rounded-3xl border-2 text-left transition-all hover:border-black flex gap-4 items-center group
+                                            className={`p-6 rounded-3xl border-2 text-left transition-all hover:border-black flex gap-4 items-center group relative
                                                 ${exportType === opt.id ? 'border-black bg-black text-white' : 'border-gray-50 bg-gray-50/50'}
                                             `}
                                         >
@@ -367,7 +469,12 @@ export default function BrandKit() {
                                                 {opt.icon}
                                             </div>
                                             <div className="flex flex-col">
-                                                <span className="font-bold">{opt.name}</span>
+                                                <div className="flex items-center gap-2">
+                                                    <span className="font-bold">{opt.name}</span>
+                                                    {opt.premium && user?.plan === 'FREE' && (
+                                                        <span className="bg-amber-500 text-[8px] text-white px-1.5 py-0.5 rounded-full uppercase font-black">Plus</span>
+                                                    )}
+                                                </div>
                                                 <span className={`text-[10px] ${exportType === opt.id ? 'text-white/60' : 'text-gray-400'}`}>{opt.desc}</span>
                                             </div>
                                             {isSaving && exportType === opt.id && (
@@ -389,10 +496,10 @@ export default function BrandKit() {
                 )}
             </AnimatePresence>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 min-h-[calc(100vh-80px)]">
+            <div className="grid grid-cols-1 lg:grid-cols-12 lg:h-[calc(100vh-80px)] overflow-hidden">
 
                 {/* Sidebar Controls */}
-                <aside className="lg:col-span-3 border-r border-gray-100 p-8 flex flex-col gap-10 overflow-y-auto max-h-[calc(100vh-80px)] font-sans">
+                <aside className="lg:col-span-3 border-r border-gray-100 p-8 flex flex-col gap-10 overflow-y-auto lg:h-full font-sans bg-white">
 
                     {/* Colors Section */}
                     <div className="flex flex-col gap-6">
@@ -412,7 +519,7 @@ export default function BrandKit() {
                                         <span>{item.color}</span>
                                     </div>
                                     <div className="flex gap-1">
-                                        {currentProject.colors.map((c, idx) => (
+                                        {paletteColors.map((c, idx) => (
                                             <button
                                                 key={idx}
                                                 onClick={() => item.set(c)}
@@ -478,16 +585,30 @@ export default function BrandKit() {
                                         <button
                                             onClick={() => { setCustomFontName(null); setSelectedFont(googleFonts[0]); }}
                                             className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                                            aria-label="Eliminar tipografía personalizada"
+                                            title="Eliminar tipografía personalizada"
                                         >
                                             <Trash2 size={16} />
                                         </button>
                                     </div>
                                 ) : (
                                     <button
-                                        onClick={() => fileInputRef.current?.click()}
-                                        className="w-full p-4 rounded-xl border-2 border-dashed border-gray-200 hover:border-black hover:bg-gray-50 transition-all flex flex-col items-center gap-2 text-gray-400 hover:text-black"
+                                        onClick={() => {
+                                            if (user?.plan === 'FREE') {
+                                                alert("La subida de tipografías personalizadas es una función PLUS. Por favor, actualiza tu plan.");
+                                                navigate('/pricing');
+                                                return;
+                                            }
+                                            fileInputRef.current?.click();
+                                        }}
+                                        className="w-full p-4 rounded-xl border-2 border-dashed border-gray-200 hover:border-black hover:bg-gray-50 transition-all flex flex-col items-center gap-2 text-gray-400 hover:text-black group"
                                     >
-                                        <Upload size={20} />
+                                        <div className="flex items-center gap-2">
+                                            <Upload size={20} />
+                                            {user?.plan === 'FREE' && (
+                                                <span className="bg-amber-500 text-[8px] text-white px-1.5 py-0.5 rounded-full uppercase font-black">Plus</span>
+                                            )}
+                                        </div>
                                         <span className="text-xs font-bold uppercase tracking-widest">Upload Custom Font</span>
                                     </button>
                                 )}
@@ -497,7 +618,7 @@ export default function BrandKit() {
                 </aside>
 
                 {/* Live Preview Area */}
-                <main className="lg:col-span-9 p-8 md:p-12 lg:p-20 bg-gray-50/50 flex flex-col items-center justify-start overflow-y-auto max-h-[calc(100vh-80px)]">
+                <main className="lg:col-span-9 p-6 md:p-12 lg:p-20 bg-gray-50/50 flex flex-col items-center justify-start overflow-y-auto lg:h-full">
                     <motion.div
                         key={activeCombo}
                         initial={{ opacity: 0, y: 20 }}
@@ -507,12 +628,12 @@ export default function BrandKit() {
                     >
                         {/* Main Brand Showcase */}
                         <div
-                            className="w-full aspect-[21/9] rounded-[48px] p-12 shadow-2xl flex flex-col justify-center items-center text-center gap-6 relative overflow-hidden transition-all duration-700"
+                            className="w-full aspect-square md:aspect-[21/9] rounded-[32px] md:rounded-[48px] p-8 md:p-12 shadow-2xl flex flex-col justify-center items-center text-center gap-6 relative overflow-hidden transition-all duration-700"
                             style={{ backgroundColor: background }}
                         >
                             {/* Decorative background shapes */}
-                            <div className="absolute top-0 right-0 w-64 h-64 blur-[120px] rounded-full opacity-20" style={{ backgroundColor: primary }} />
-                            <div className="absolute bottom-0 left-0 w-64 h-64 blur-[120px] rounded-full opacity-20" style={{ backgroundColor: secondary }} />
+                            <div className="absolute top-0 right-0 w-48 h-48 md:w-64 md:h-64 blur-[80px] md:blur-[120px] rounded-full opacity-20" style={{ backgroundColor: primary }} />
+                            <div className="absolute bottom-0 left-0 w-48 h-48 md:w-64 md:h-64 blur-[80px] md:blur-[120px] rounded-full opacity-20" style={{ backgroundColor: secondary }} />
 
                             <motion.div
                                 initial={{ scale: 0.8, opacity: 0 }}
@@ -524,11 +645,11 @@ export default function BrandKit() {
                                 <Palette size={40} />
                             </motion.div>
 
-                            <h2 className="text-6xl md:text-8xl font-bold tracking-tighter leading-none" style={{ color: primary }}>
+                            <h2 className="text-4xl md:text-6xl lg:text-8xl font-bold tracking-tighter leading-none" style={{ color: primary }}>
                                 Craft your identity.
                             </h2>
                             <p className="max-w-xl text-lg md:text-xl opacity-60 leading-relaxed" style={{ color: primary }}>
-                                Experiment with {currentProject.name} palette and <span className="font-bold underline">{selectedFont.name}</span> typography to create a high-end visual language.
+                                Experiment with {kitName} palette and <span className="font-bold underline">{selectedFont.name}</span> typography to create a high-end visual language.
                             </p>
                             <button className="px-10 py-4 rounded-full text-sm font-bold uppercase tracking-widest mt-4 shadow-xl hover:scale-105 transition-transform" style={{ backgroundColor: secondary, color: background === '#FFFFFF' ? '#000' : '#FFF' }}>
                                 Explore Vision
@@ -657,21 +778,21 @@ export default function BrandKit() {
                         </div>
 
                         {/* Typography Spec Card */}
-                        <div className="w-full bg-white rounded-[40px] p-12 border border-gray-100 shadow-sm flex flex-col md:flex-row gap-12 items-center">
-                            <div className="flex-1 flex flex-col gap-6">
+                        <div className="w-full bg-white rounded-[32px] md:rounded-[40px] p-8 md:p-12 border border-gray-100 shadow-sm flex flex-col md:flex-row gap-8 md:gap-12 items-center">
+                            <div className="flex-1 flex flex-col gap-6 w-full md:w-auto">
                                 <span className="text-xs font-bold text-gray-400 uppercase tracking-widest font-sans">Visual spec</span>
-                                <h2 className="text-6xl font-bold" style={{ color: primary }}>Aa</h2>
+                                <h2 className="text-5xl md:text-6xl font-bold" style={{ color: primary }}>Aa</h2>
                                 <div className="flex flex-col gap-4">
-                                    <h3 className="text-5xl font-bold" style={{ color: primary }}>{selectedFont.name}</h3>
+                                    <h3 className="text-3xl md:text-5xl font-bold" style={{ color: primary }}>{selectedFont.name}</h3>
                                     <div className="flex flex-wrap gap-4 mt-2">
                                         {["Regular", "Medium", "Semibold", "Bold"].map(weight => (
-                                            <span key={weight} className="text-xs uppercase font-bold tracking-widest opacity-50" style={{ color: primary }}>{weight}</span>
+                                            <span key={weight} className="text-[10px] md:text-xs uppercase font-bold tracking-widest opacity-50" style={{ color: primary }}>{weight}</span>
                                         ))}
                                     </div>
                                 </div>
                             </div>
-                            <div className="flex-1 flex flex-col gap-4 p-8 rounded-[32px]" style={{ backgroundColor: background + '20' }}>
-                                <p className="text-2xl leading-relaxed" style={{ color: primary }}>
+                            <div className="flex-1 flex flex-col gap-4 p-6 md:p-8 rounded-[24px] md:rounded-[32px] w-full" style={{ backgroundColor: background + '20' }}>
+                                <p className="text-lg md:text-2xl leading-relaxed" style={{ color: primary }}>
                                     ChromaSync Aura provides a seamless integration between color psychology and typography.
                                     <span className="inline-block px-2 ml-1 rounded" style={{ backgroundColor: secondary, color: background }}>Design is thinking</span> made visual.
                                 </p>
@@ -688,8 +809,4 @@ export default function BrandKit() {
             </div>
         </div>
     );
-}
-
-function cn(...inputs: any[]) {
-    return inputs.filter(Boolean).join(' ');
 }

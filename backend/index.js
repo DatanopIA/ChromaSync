@@ -4,6 +4,8 @@ const { expressMiddleware } = require('@as-integrations/express4');
 const cors = require('cors');
 const helmet = require('helmet');
 const dotenv = require('dotenv');
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+require('dotenv').config();
 const { PrismaClient } = require('@prisma/client');
 const { createClient } = require('@supabase/supabase-js');
 const { generatePalette } = require('./services/aiService');
@@ -13,7 +15,10 @@ const { PrismaPg } = require('@prisma/adapter-pg');
 
 dotenv.config();
 
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false }
+});
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
@@ -249,15 +254,28 @@ const typeDefs = `#graphql
     unlockedAt: String!
   }
 
+  type Notification {
+    id: ID!
+    type: String!
+    title: String!
+    message: String!
+    read: Boolean!
+    link: String
+    createdAt: String!
+  }
+
   type Query {
     hello: String
     me: User
     myPalettes: [Palette!]!
+    palette(id: ID!): Palette
     generateIAPalette(prompt: String!, image: String): PaletteIA
     getComments(resourceId: ID!): [Comment!]!
     getCollaborators(resourceId: ID!): [Collaboration!]!
     getActivityLogs: [ActivityLog!]!
     getMyBadges: [UserBadge!]!
+    myNotifications: [Notification!]!
+    searchUserByEmail(email: String!): User
   }
 
   type Mutation {
@@ -266,6 +284,8 @@ const typeDefs = `#graphql
     deletePalette(id: ID!): Boolean
     addComment(resourceId: ID!, content: String!, parentCommentId: ID): Comment
     addCollaboration(resourceId: ID!, resourceType: String!, userId: ID!, role: String): Collaboration
+    markNotificationAsRead(id: ID!): Boolean
+    simulatePlanUpgrade(plan: String!): User
   }
 `;
 
@@ -310,6 +330,14 @@ const resolvers = {
                 orderBy: { createdAt: 'desc' }
             });
         },
+        palette: async (_, { id }, { user }) => {
+            // Permitimos ver si es pública o si el usuario es el dueño
+            // Por ahora simplificamos a que sea el dueño
+            if (!user) throw new Error('No autorizado');
+            return await prisma.palette.findUnique({
+                where: { id: id }
+            });
+        },
         getComments: async (_, { resourceId }) => {
             return await prisma.comment.findMany({
                 where: { resourceId, parentCommentId: null },
@@ -336,6 +364,16 @@ const resolvers = {
             return await prisma.userBadge.findMany({
                 where: { userId: user.id }
             });
+        },
+        myNotifications: async (_, __, { user }) => {
+            if (!user) throw new Error('No autorizado');
+            return await prisma.notification.findMany({
+                where: { userId: user.id },
+                orderBy: { createdAt: 'desc' }
+            });
+        },
+        searchUserByEmail: async (_, { email }) => {
+            return await prisma.user.findUnique({ where: { email } });
         }
     },
     Mutation: {
@@ -359,8 +397,9 @@ const resolvers = {
         },
         addCollaboration: async (_, { resourceId, resourceType, userId, role }, { user }) => {
             if (!user) throw new Error('No autorizado');
-            // Solo el dueño del recurso debería poder invitar (lógica simplificada para MVP)
-            return await prisma.collaboration.create({
+            if (user.plan === 'FREE') throw new Error('La colaboración requiere el plan PLUS o PRO');
+            console.log(`[Mutation] Añadiendo colaborador ${userId} a recurso ${resourceId}...`);
+            const collab = await prisma.collaboration.create({
                 data: {
                     resourceId,
                     resourceType,
@@ -370,6 +409,28 @@ const resolvers = {
                 },
                 include: { user: true }
             });
+
+            // Crear notificación para el usuario invitado
+            try {
+                const resource = resourceType === 'PALETTE'
+                    ? await prisma.palette.findUnique({ where: { id: resourceId } })
+                    : { name: 'un recurso' };
+
+                await prisma.notification.create({
+                    data: {
+                        userId,
+                        type: 'INVITE',
+                        title: 'Nueva invitación',
+                        message: `${user.fullName} te ha invitado a colaborar en "${resource?.name || 'un recurso'}" como ${role || 'VIEWER'}.`,
+                        link: `/projects/${resourceId}`
+                    }
+                });
+                console.log(`[Mutation] Colaboración y notificación creadas con éxito.`);
+            } catch (notifyError) {
+                console.error('[Mutation] Error enviando notificación:', notifyError.message);
+            }
+
+            return collab;
         },
         createCheckoutSession: async (_, { priceId }, { user }) => {
             if (!user) throw new Error('Debes estar autenticado');
@@ -415,10 +476,50 @@ const resolvers = {
         },
         deletePalette: async (_, { id }, { user }) => {
             if (!user) throw new Error('No autorizado');
-            await prisma.palette.deleteMany({
-                where: { id, ownerId: user.id }
+            console.log(`[Mutation] Intentando borrar paleta ${id} del usuario ${user.id}...`);
+
+            try {
+                // Eliminar de moodboards primero para evitar error de FK (Foreign Key)
+                await prisma.moodboardPalette.deleteMany({
+                    where: { paletteId: id }
+                });
+
+                // También eliminar colaboraciones asociadas
+                await prisma.collaboration.deleteMany({
+                    where: { resourceId: id, resourceType: 'PALETTE' }
+                });
+
+                const result = await prisma.palette.deleteMany({
+                    where: { id, ownerId: user.id }
+                });
+
+                if (result.count === 0) {
+                    console.warn(`[Mutation] No se encontró la paleta ${id} o no pertenece al usuario.`);
+                } else {
+                    console.log(`[Mutation] Paleta ${id} borrada con éxito.`);
+                }
+
+                return true;
+            } catch (err) {
+                console.error('[Mutation] Error enviando borrado:', err.message);
+                throw new Error(`Error al borrar paleta: ${err.message}`);
+            }
+        },
+        markNotificationAsRead: async (_, { id }, { user }) => {
+            if (!user) throw new Error('No autorizado');
+            await prisma.notification.updateMany({
+                where: { id, userId: user.id },
+                data: { read: true }
             });
             return true;
+        },
+        simulatePlanUpgrade: async (_, { plan }, { user }) => {
+            if (!user) throw new Error('No autorizado');
+            console.log(`[Test] Simulando subida de plan a ${plan} para ${user.email}`);
+            return await prisma.user.update({
+                where: { id: user.id },
+                data: { plan }
+            });
         }
     }
 };

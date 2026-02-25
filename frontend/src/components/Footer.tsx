@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Sparkles, Github, Twitter, Instagram, Mail, ArrowUpRight } from "lucide-react";
 import { motion } from "framer-motion";
+import Logo from "./Logo";
 
 const integrations = [
     { name: "Google AI", category: "Intelligence", color: "from-blue-400 to-red-400" },
@@ -44,10 +45,8 @@ export default function Footer() {
                 {/* Main Footer Links */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16">
                     <div className="flex flex-col gap-6">
-                        <Link to="/" className="flex items-center gap-2 group">
-                            <div className="w-8 h-8 bg-foreground rounded-lg flex items-center justify-center group-hover:rotate-12 transition-transform duration-300 shadow-lg shadow-black/10">
-                                <Sparkles size={16} className="text-background" />
-                            </div>
+                        <Link to="/" className="flex items-center gap-3 group">
+                            <Logo size={40} className="group-hover:rotate-6 transition-transform duration-500" />
                             <span className="font-bold text-xl tracking-tight">ChromaSync</span>
                         </Link>
                         <p className="text-muted-foreground leading-relaxed">
