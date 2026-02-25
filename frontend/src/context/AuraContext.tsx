@@ -2,9 +2,9 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { createClient, User } from "@supabase/supabase-js";
 import { request, gql } from "graphql-request";
 
-const SUPABASE_URL = "https://olmvkmyyqfpdhxfaozsp.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9sbXZrbXl5cWZwZGh4ZmFvenNwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5MjUzNzgsImV4cCI6MjA4NzUwMTM3OH0.Y-er__uYzvP50bqprPZLWjl-yAdvJ2mVNpFy560eBUY";
-const GRAPHQL_ENDPOINT = "http://localhost:4000/graphql";
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || "https://olmvkmyyqfpdhxfaozsp.supabase.co";
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9sbXZrbXl5cWZwZGh4ZmFvenNwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5MjUzNzgsImV4cCI6MjA4NzUwMTM3OH0.Y-er__uYzvP50bqprPZLWjl-yAdvJ2mVNpFy560eBUY";
+const GRAPHQL_ENDPOINT = import.meta.env.VITE_GRAPHQL_ENDPOINT || "http://localhost:4000/graphql";
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
