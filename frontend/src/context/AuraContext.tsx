@@ -2,9 +2,9 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { createClient, User } from "@supabase/supabase-js";
 import { request, gql } from "graphql-request";
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || "https://olmvkmyyqfpdhxfaozsp.supabase.co";
-const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9sbXZrbXl5cWZwZGh4ZmFvenNwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5MjUzNzgsImV4cCI6MjA4NzUwMTM3OH0.Y-er__uYzvP50bqprPZLWjl-yAdvJ2mVNpFy560eBUY";
-const GRAPHQL_ENDPOINT = import.meta.env.VITE_GRAPHQL_ENDPOINT || "http://localhost:4000/graphql";
+const SUPABASE_URL = (import.meta as any).env.VITE_SUPABASE_URL || "https://olmvkmyyqfpdhxfaozsp.supabase.co";
+const SUPABASE_ANON_KEY = (import.meta as any).env.VITE_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9sbXZrbXl5cWZwZGh4ZmFvenNwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5MjUzNzgsImV4cCI6MjA4NzUwMTM3OH0.Y-er__uYzvP50bqprPZLWjl-yAdvJ2mVNpFy560eBUY";
+const GRAPHQL_ENDPOINT = (import.meta as any).env.VITE_GRAPHQL_ENDPOINT || "https://chromasync-production.up.railway.app/graphql";
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -253,18 +253,19 @@ export function AuraProvider({ children }: { children: ReactNode }) {
         }
       `;
       const headers = await getHeaders();
-      // Permitimos que esto se llame incluso sin usuario; el backend manejará el caso anónimo
       const data: any = await request(GRAPHQL_ENDPOINT, mutation, { priceId }, headers);
       if (data.createCheckoutSession) {
         window.location.href = data.createCheckoutSession;
       }
     } catch (error: any) {
       console.error("Checkout session error:", error);
-      // Si el backend aún requiere auth, mostramos el login
-      if (error.message?.includes("autenticado") || error.message?.includes("autorizado")) {
+
+      const errorMsg = error.message || "";
+      if (errorMsg.includes("autenticado") || errorMsg.includes("autorizado")) {
         signInWithGoogle();
       } else {
-        alert("No se pudo iniciar la transacción. Por favor, inténtalo de nuevo.");
+        // Mostramos el error específico para diagnosticar mejor (ej. "Failed to fetch", "CORS", etc.)
+        alert(`Error al iniciar el pago: ${errorMsg.substring(0, 100)}\n\nVerifica que el Backend esté desplegado y configurado correctamente.`);
       }
     }
   };
