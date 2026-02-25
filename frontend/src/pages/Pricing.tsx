@@ -2,10 +2,14 @@ import { useAura } from "../context/AuraContext";
 import { PricingSection, PricingPlan } from "../components/ui/pricing";
 
 export default function Pricing() {
-    const { createCheckoutSession } = useAura();
+    const { createCheckoutSession, user, signInWithGoogle } = useAura();
 
     const handleSubscribe = (priceId: string | null) => {
         if (!priceId) return;
+        if (!user) {
+            signInWithGoogle();
+            return;
+        }
         createCheckoutSession(priceId);
     };
 

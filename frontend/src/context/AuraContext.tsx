@@ -246,15 +246,20 @@ export function AuraProvider({ children }: { children: ReactNode }) {
   };
 
   const createCheckoutSession = async (priceId: string) => {
-    const mutation = gql`
-      mutation CreateCheckoutSession($priceId: String!) {
-        createCheckoutSession(priceId: $priceId)
+    try {
+      const mutation = gql`
+        mutation CreateCheckoutSession($priceId: String!) {
+          createCheckoutSession(priceId: $priceId)
+        }
+      `;
+      const headers = await getHeaders();
+      const data: any = await request(GRAPHQL_ENDPOINT, mutation, { priceId }, headers);
+      if (data.createCheckoutSession) {
+        window.location.href = data.createCheckoutSession;
       }
-    `;
-    const headers = await getHeaders();
-    const data: any = await request(GRAPHQL_ENDPOINT, mutation, { priceId }, headers);
-    if (data.createCheckoutSession) {
-      window.location.href = data.createCheckoutSession;
+    } catch (error: any) {
+      console.error("Checkout session error:", error);
+      alert("No se pudo iniciar la transacción. Por favor, asegúrate de estar logueado y que el servidor esté disponible.");
     }
   };
 

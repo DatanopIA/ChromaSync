@@ -1,0 +1,19 @@
+# Scripts para Reels/TikTok (5-15 seg)
+
+## Script 1: "The Magic Sync" (Visual Focus)
+* **[0-2s]:** Primer plano de la pantalla negra. Un clic y se genera una paleta vibrante.
+* **[2-5s]:** Transiciones rápidas entre diferentes paletas (Modo Oscuro -> Modo Claro).
+* **[5-10s]:** Texto en pantalla: "Tu marca. Sincronizada."
+* **[10-15s]:** Logotipo de ChromaSync Aura y CTA: "Enlace en Bio".
+* **Audio sugerido:** Un beat electrónico lo-fi, con un sonido de "clic" o "swish" en cada cambio de color.
+
+## Script 2: "Before vs After" (Problem/Solution)
+* **[0-3s]:** Pantalla dividida. Izquierda: Carpetas desordenadas, post-its con códigos HEX. Derecha: Interfaz limpia de ChromaSync.
+* **[3-7s]:** La mano del usuario deslizando suavemente por la app de ChromaSync.
+* **[7-12s]:** Texto: "Deja el caos. Pasa al Aura."
+* **Audio sugerido:** Audio de tendencia tipo "Expectation vs Reality".
+
+## Script 3: "POV: Eres diseñador"
+* **[0-5s]:** POV desde el hombro del diseñador. El cursor se mueve por la app.
+* **[5-10s]:** Muestra la facilidad de copiar un color al portapapeles.
+* **[10-15s]:** El diseñador sonriendo a cámara. Texto: "Tu nuevo mejor amigo."
