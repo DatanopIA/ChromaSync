@@ -69,20 +69,33 @@ export default function Dashboard() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex flex-col md:flex-row md:items-center gap-2 md:gap-8 overflow-visible"
+          className="relative z-10 flex flex-col md:flex-row md:items-center gap-2 md:gap-8 overflow-visible"
         >
-          <MagneticText
-            text="COLOR"
-            hoverText="CREATE"
-            className="text-[18vw] md:text-[8vw] font-black tracking-tighter uppercase leading-[0.8]"
-            circleSize={window.innerWidth < 768 ? 100 : 200}
-          />
-          <MagneticText
-            text="STUDIO"
-            hoverText="DESIGN"
-            className="text-[18vw] md:text-[8vw] font-black tracking-tighter uppercase leading-[0.8]"
-            circleSize={window.innerWidth < 768 ? 100 : 200}
-          />
+          {/* Desktop Version with Magnetic Animation */}
+          <div className="hidden md:flex items-center gap-8">
+            <MagneticText
+              text="COLOR"
+              hoverText="CREATE"
+              className="md:text-[8vw] font-black tracking-tighter uppercase leading-[0.8]"
+              circleSize={200}
+            />
+            <MagneticText
+              text="STUDIO"
+              hoverText="DESIGN"
+              className="md:text-[8vw] font-black tracking-tighter uppercase leading-[0.8]"
+              circleSize={200}
+            />
+          </div>
+
+          {/* Mobile Version - Clean Static Typography (No dots) */}
+          <div className="flex md:hidden flex-col gap-0 mb-4">
+            <h1 className="text-[20vw] font-black tracking-tighter uppercase leading-[0.7] text-foreground">
+              COLOR
+            </h1>
+            <h1 className="text-[20vw] font-black tracking-tighter uppercase leading-[0.7] text-foreground">
+              STUDIO
+            </h1>
+          </div>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-24 mt-8">
