@@ -3,6 +3,7 @@ import { ArrowRight, Sparkles, Image, Eye, Download, Briefcase, Globe } from "lu
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { MagneticText } from "@/components/ui/morphing-cursor";
+import { AuroraBackground } from "@/components/ui/aurora-background";
 
 const categories = [
   {
@@ -308,40 +309,58 @@ export default function Dashboard() {
       </section>
 
       {/* CTA Section */}
-      <section className="relative py-24 md:py-32 overflow-hidden rounded-[4rem] bg-foreground text-background mb-12 shadow-2xl">
-        {/* Decorative elements - Animated Glows */}
-        <motion.div
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.3, 0.5, 0.3]
-          }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/30 blur-[150px] rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none"
-        />
-        <motion.div
-          animate={{
-            scale: [1.2, 1, 1.2],
-            opacity: [0.2, 0.4, 0.2]
-          }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-primary/20 blur-[120px] rounded-full translate-y-1/2 -translate-x-1/2 pointer-events-none"
-        />
+      <section className="relative overflow-hidden rounded-[4rem] bg-foreground text-background mb-12 shadow-2xl min-h-[500px] flex items-center justify-center">
+        {/* Desktop Layout - Keep static backgrounds & Magnetic Text */}
+        <div className="hidden md:block absolute inset-0">
+          <motion.div
+            animate={{
+              scale: [1, 1.2, 1],
+              opacity: [0.3, 0.5, 0.3]
+            }}
+            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/30 blur-[150px] rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none"
+          />
+          <motion.div
+            animate={{
+              scale: [1.2, 1, 1.2],
+              opacity: [0.2, 0.4, 0.2]
+            }}
+            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-primary/20 blur-[120px] rounded-full translate-y-1/2 -translate-x-1/2 pointer-events-none"
+          />
+        </div>
 
-        <div className="relative z-10 flex flex-col items-center text-center px-6 gap-10">
+        {/* Mobile Layout - Aurora Background */}
+        <div className="md:hidden absolute inset-0">
+          <AuroraBackground className="h-full w-full opacity-40">
+            <span className="sr-only">Aurora Background</span>
+          </AuroraBackground>
+        </div>
+
+        <div className="relative z-10 flex flex-col items-center text-center px-6 gap-10 w-full py-24 md:py-32">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="flex flex-col gap-4 items-center"
+            className="flex flex-col gap-4 items-center w-full"
           >
             <span className="text-xs font-bold uppercase tracking-[0.4em] text-white/40">Next Generation Color Tool</span>
-            <MagneticText
-              text="CREA TU IDENTIDAD VISUAL"
-              hoverText="DISEÑA TU FUTURO DIGITAL"
-              className="text-[9vw] md:text-5xl lg:text-7xl font-medium tracking-tight text-center max-w-4xl px-4"
-              variant="inverted"
-              circleSize={window.innerWidth < 768 ? 100 : 300}
-            />
+
+            {/* Conditional Rendering for Text Style */}
+            <div className="hidden md:block w-full">
+              <MagneticText
+                text="CREA TU IDENTIDAD VISUAL"
+                hoverText="DISEÑA TU FUTURO DIGITAL"
+                className="text-5xl lg:text-7xl font-medium tracking-tight text-center max-w-4xl px-4"
+                variant="inverted"
+                circleSize={300}
+              />
+            </div>
+            <div className="md:hidden block">
+              <h2 className="text-4xl font-bold tracking-tighter leading-tight px-2 bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60">
+                CREA TU IDENTIDAD VISUAL
+              </h2>
+            </div>
           </motion.div>
 
           <motion.p

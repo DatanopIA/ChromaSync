@@ -102,4 +102,22 @@ body {
 @theme inline {
   --color-destructive-foreground: oklch(1 0 0);
   --color-color-destructive-foreground: var(----color-destructive-foreground);
+  
+  /* Aurora Animation */
+  --animate-aurora: aurora 60s linear infinite;
+  
+  @keyframes aurora {
+    from {
+      background-position: 50% 50%, 50% 50%;
+    }
+    to {
+      background-position: 350% 50%, 350% 50%;
+    }
+  }
+}
+
+:root {
+  --white: #ffffff;
+  --black: #000000;
+  --transparent: transparent;
 }
