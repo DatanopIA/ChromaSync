@@ -54,12 +54,21 @@ app.post('/stripe-webhook', express.raw({ type: 'application/json' }), async (re
 
             console.log(`💰 Pago completado: ${customerEmail} -> ${plan}`);
 
-            await prisma.user.update({
+            // Usamos upsert para soportar pagos de usuarios que aún no están en nuestra DB
+            await prisma.user.upsert({
                 where: { email: customerEmail },
-                data: {
+                update: {
                     plan: plan,
                     stripeCustomerId: session.customer,
                     stripeSubscriptionId: subscriptionId
+                },
+                create: {
+                    id: `temp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+                    email: customerEmail,
+                    plan: plan,
+                    stripeCustomerId: session.customer,
+                    stripeSubscriptionId: subscriptionId,
+                    points: 50 // Bonus por suscripción
                 }
             });
             break;
@@ -97,10 +106,11 @@ const authenticate = async (req, res, next) => {
         } else if (user) {
             try {
                 // Sincronizar usuario (upsert) para asegurar que exista en la DB local
+                // Usamos email como llave de enlace para reconectar pagos de Stripe realizados como 'invitado'
                 const dbUser = await prisma.user.upsert({
-                    where: { id: user.id },
+                    where: { email: user.email },
                     update: {
-                        email: user.email,
+                        id: user.id, // Actualizamos el ID al oficial de Supabase
                         fullName: user.user_metadata?.display_name || user.user_metadata?.full_name || user.email?.split('@')[0],
                         avatarUrl: user.user_metadata?.avatar_url || user.user_metadata?.picture
                     },
@@ -433,9 +443,9 @@ const resolvers = {
             return collab;
         },
         createCheckoutSession: async (_, { priceId }, { user }) => {
-            if (!user) throw new Error('Debes estar autenticado');
             const { createCheckoutSession } = require('./services/stripeService');
-            return await createCheckoutSession(user.email, priceId);
+            // Si el usuario está autenticado, pasamos su email. Si no, Stripe lo pedirá.
+            return await createCheckoutSession(user?.email || null, priceId);
         },
         savePalette: async (_, { name, colors, aiGenerated, tags }, { user }) => {
             if (!user) throw new Error('No autorizado');

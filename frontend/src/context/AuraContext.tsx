@@ -231,13 +231,13 @@ export function AuraProvider({ children }: { children: ReactNode }) {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: window.location.origin
+          redirectTo: window.location.href
         }
       });
       if (error) throw error;
     } catch (error: any) {
       console.error("Auth error:", error);
-      alert("El login con Google no está configurado en Supabase. Por favor, asegúrate de habilitar Google como proveedor en el dashboard de Supabase.");
+      alert("El login con Google no está configurado en Supabase o hubo un error de red.");
     }
   };
 
@@ -253,13 +253,19 @@ export function AuraProvider({ children }: { children: ReactNode }) {
         }
       `;
       const headers = await getHeaders();
+      // Permitimos que esto se llame incluso sin usuario; el backend manejará el caso anónimo
       const data: any = await request(GRAPHQL_ENDPOINT, mutation, { priceId }, headers);
       if (data.createCheckoutSession) {
         window.location.href = data.createCheckoutSession;
       }
     } catch (error: any) {
       console.error("Checkout session error:", error);
-      alert("No se pudo iniciar la transacción. Por favor, asegúrate de estar logueado y que el servidor esté disponible.");
+      // Si el backend aún requiere auth, mostramos el login
+      if (error.message?.includes("autenticado") || error.message?.includes("autorizado")) {
+        signInWithGoogle();
+      } else {
+        alert("No se pudo iniciar la transacción. Por favor, inténtalo de nuevo.");
+      }
     }
   };
 

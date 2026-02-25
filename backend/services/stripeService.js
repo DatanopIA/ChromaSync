@@ -47,7 +47,7 @@ async function setupStripeProducts() {
 
 async function createCheckoutSession(customerEmail, priceId) {
     try {
-        const session = await stripe.checkout.sessions.create({
+        const sessionData = {
             payment_method_types: ['card'],
             line_items: [
                 {
@@ -56,10 +56,15 @@ async function createCheckoutSession(customerEmail, priceId) {
                 },
             ],
             mode: 'subscription',
-            customer_email: customerEmail,
             success_url: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/success?session_id={CHECKOUT_SESSION_ID}`,
             cancel_url: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/pricing`,
-        });
+        };
+
+        if (customerEmail) {
+            sessionData.customer_email = customerEmail;
+        }
+
+        const session = await stripe.checkout.sessions.create(sessionData);
         return session.url;
     } catch (error) {
         console.error('❌ Error creating checkout session:', error.message);

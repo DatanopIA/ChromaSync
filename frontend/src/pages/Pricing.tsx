@@ -6,10 +6,6 @@ export default function Pricing() {
 
     const handleSubscribe = (priceId: string | null) => {
         if (!priceId) return;
-        if (!user) {
-            signInWithGoogle();
-            return;
-        }
         createCheckoutSession(priceId);
     };
 
