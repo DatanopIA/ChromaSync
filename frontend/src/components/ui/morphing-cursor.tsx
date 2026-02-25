@@ -58,9 +58,10 @@ export function MagneticText({
             }
 
             if (innerTextRef.current && dim.w > 0) {
-                // To keep inner text fixed relative to container:
-                // Circle center is at (cx, cy). Container center is (dim.w/2, dim.h/2).
-                // Relative to circle center, container center is (dim.w/2 - cx, dim.h/2 - cy).
+                // To align perfectly, the inner text (which is dim.w wide) 
+                // must be shifted back by the same amount the circle was moved from the center.
+                // World center is (dim.w/2, dim.h/2). Circle center is (cx, cy).
+                // Relative to circle center, world center is (dim.w/2 - cx, dim.h/2 - cy).
                 const tx = (dim.w / 2) - currentPos.current.x
                 const ty = (dim.h / 2) - currentPos.current.y
                 innerTextRef.current.style.transform = `translate(${tx}px, ${ty}px)`
@@ -105,11 +106,11 @@ export function MagneticText({
 
         const interval = setInterval(() => {
             setIsHovered(prev => !prev)
-            if (!isHovered) {
-                // Randomize position when activating
+            if (!isHovered && dim.w > 0) {
+                // Center it on mobile auto-morph
                 mousePos.current = {
-                    x: Math.random() * dim.w,
-                    y: Math.random() * dim.h
+                    x: dim.w / 2,
+                    y: dim.h / 2
                 }
             }
         }, 3000)
@@ -127,21 +128,21 @@ export function MagneticText({
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
             className={cn(
-                "relative inline-grid items-center justify-center cursor-none select-none overflow-visible",
+                "relative inline-grid items-center justify-center cursor-none select-none overflow-visible w-full",
                 className
             )}
         >
             {/* Sizing Layers */}
-            <span className="invisible pointer-events-none [grid-area:1/1] opacity-0 flex justify-center w-full" aria-hidden="true">
+            <span className="invisible pointer-events-none [grid-area:1/1] opacity-0 flex justify-center w-full text-center" aria-hidden="true">
                 {text}
             </span>
-            <span className="invisible pointer-events-none [grid-area:1/1] opacity-0 flex justify-center w-full" aria-hidden="true">
+            <span className="invisible pointer-events-none [grid-area:1/1] opacity-0 flex justify-center w-full text-center" aria-hidden="true">
                 {hoverText || text}
             </span>
 
             {/* Base Text (Behind) */}
             <div className="[grid-area:1/1] flex items-center justify-center pointer-events-none z-10 w-full h-full p-2">
-                <span className="text-center">{text}</span>
+                <span className="text-center w-full">{text}</span>
             </div>
 
             {/* Masking Circle Container */}
@@ -149,7 +150,7 @@ export function MagneticText({
                 <div
                     ref={circleRef}
                     className={cn(
-                        "absolute top-1/2 left-1/2 md:top-0 md:left-0 pointer-events-none rounded-full overflow-hidden z-20 flex items-center justify-center",
+                        "absolute top-0 left-0 pointer-events-none rounded-full overflow-hidden z-20 flex items-center justify-center",
                         circleBg
                     )}
                     style={{
@@ -157,7 +158,6 @@ export function MagneticText({
                         height: isHovered ? circleSize : 0,
                         transition: "width 0.6s cubic-bezier(0.16, 1, 0.3, 1), height 0.6s cubic-bezier(0.16, 1, 0.3, 1)",
                         willChange: "transform, width, height",
-                        transform: window.innerWidth < 768 ? 'translate(-50%, -50%)' : undefined
                     }}
                 >
                     {/* Inner Text Layer */}
@@ -170,7 +170,7 @@ export function MagneticText({
                             willChange: "transform",
                         }}
                     >
-                        <span className="text-center">
+                        <span className="text-center w-full">
                             {hoverText || text}
                         </span>
                     </div>
