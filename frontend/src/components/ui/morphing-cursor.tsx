@@ -99,6 +99,24 @@ export function MagneticText({
         setIsHovered(false)
     }, [])
 
+    // Auto-morph for mobile/touch devices
+    useEffect(() => {
+        if (window.innerWidth >= 768) return
+
+        const interval = setInterval(() => {
+            setIsHovered(prev => !prev)
+            if (!isHovered) {
+                // Randomize position when activating
+                mousePos.current = {
+                    x: Math.random() * dim.w,
+                    y: Math.random() * dim.h
+                }
+            }
+        }, 3000)
+
+        return () => clearInterval(interval)
+    }, [dim.w, dim.h, isHovered])
+
     const circleBg = variant === "default" ? "bg-foreground" : "bg-background"
     const innerTextColor = variant === "default" ? "text-background" : "text-foreground"
 
@@ -114,16 +132,16 @@ export function MagneticText({
             )}
         >
             {/* Sizing Layers */}
-            <span className="invisible pointer-events-none whitespace-nowrap [grid-area:1/1] opacity-0 flex justify-center w-full" aria-hidden="true">
+            <span className="invisible pointer-events-none [grid-area:1/1] opacity-0 flex justify-center w-full" aria-hidden="true">
                 {text}
             </span>
-            <span className="invisible pointer-events-none whitespace-nowrap [grid-area:1/1] opacity-0 flex justify-center w-full" aria-hidden="true">
+            <span className="invisible pointer-events-none [grid-area:1/1] opacity-0 flex justify-center w-full" aria-hidden="true">
                 {hoverText || text}
             </span>
 
             {/* Base Text (Behind) */}
-            <div className="[grid-area:1/1] flex items-center justify-center pointer-events-none z-10 w-full h-full">
-                <span className="whitespace-nowrap">{text}</span>
+            <div className="[grid-area:1/1] flex items-center justify-center pointer-events-none z-10 w-full h-full p-2">
+                <span className="text-center">{text}</span>
             </div>
 
             {/* Masking Circle Container */}
@@ -131,7 +149,7 @@ export function MagneticText({
                 <div
                     ref={circleRef}
                     className={cn(
-                        "absolute top-0 left-0 pointer-events-none rounded-full overflow-hidden z-20 flex items-center justify-center",
+                        "absolute top-1/2 left-1/2 md:top-0 md:left-0 pointer-events-none rounded-full overflow-hidden z-20 flex items-center justify-center",
                         circleBg
                     )}
                     style={{
@@ -139,19 +157,20 @@ export function MagneticText({
                         height: isHovered ? circleSize : 0,
                         transition: "width 0.6s cubic-bezier(0.16, 1, 0.3, 1), height 0.6s cubic-bezier(0.16, 1, 0.3, 1)",
                         willChange: "transform, width, height",
+                        transform: window.innerWidth < 768 ? 'translate(-50%, -50%)' : undefined
                     }}
                 >
                     {/* Inner Text Layer */}
                     <div
                         ref={innerTextRef}
-                        className={cn("absolute flex items-center justify-center pointer-events-none", innerTextColor)}
+                        className={cn("absolute flex items-center justify-center pointer-events-none p-2", innerTextColor)}
                         style={{
                             width: dim.w,
                             height: dim.h,
                             willChange: "transform",
                         }}
                     >
-                        <span className="whitespace-nowrap">
+                        <span className="text-center">
                             {hoverText || text}
                         </span>
                     </div>

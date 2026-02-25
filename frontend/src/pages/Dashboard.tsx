@@ -61,19 +61,19 @@ export default function Dashboard() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8 overflow-visible"
+          className="flex flex-col md:flex-row md:items-center gap-2 md:gap-8 overflow-visible"
         >
           <MagneticText
             text="COLOR"
             hoverText="CREATE"
-            className="text-[14vw] md:text-[8vw] font-black tracking-tighter uppercase"
-            circleSize={window.innerWidth < 768 ? 120 : 200}
+            className="text-[18vw] md:text-[8vw] font-black tracking-tighter uppercase leading-[0.8]"
+            circleSize={window.innerWidth < 768 ? 100 : 200}
           />
           <MagneticText
             text="STUDIO"
             hoverText="DESIGN"
-            className="text-[14vw] md:text-[8vw] font-black tracking-tighter uppercase"
-            circleSize={window.innerWidth < 768 ? 120 : 200}
+            className="text-[18vw] md:text-[8vw] font-black tracking-tighter uppercase leading-[0.8]"
+            circleSize={window.innerWidth < 768 ? 100 : 200}
           />
         </motion.div>
 
@@ -84,7 +84,7 @@ export default function Dashboard() {
             transition={{ delay: 0.1 }}
             className="flex flex-col gap-6"
           >
-            <h2 className="text-2xl md:text-4xl font-medium leading-tight h-[3em] md:h-auto">
+            <h2 className="text-2xl md:text-4xl font-medium leading-tight md:h-auto">
               {activeCategory.description}
             </h2>
             <p className="text-muted-foreground text-lg max-w-md leading-relaxed">
@@ -338,9 +338,9 @@ export default function Dashboard() {
             <MagneticText
               text="CREA TU IDENTIDAD VISUAL"
               hoverText="DISEÑA TU FUTURO DIGITAL"
-              className="text-3xl md:text-5xl lg:text-7xl font-medium tracking-tight text-center max-w-4xl"
+              className="text-[9vw] md:text-5xl lg:text-7xl font-medium tracking-tight text-center max-w-4xl px-4"
               variant="inverted"
-              circleSize={window.innerWidth < 768 ? 150 : 300}
+              circleSize={window.innerWidth < 768 ? 100 : 300}
             />
           </motion.div>
 

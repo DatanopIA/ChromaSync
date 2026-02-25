@@ -295,17 +295,17 @@ export default function BrandKit() {
                         <span className="font-bold text-sm uppercase tracking-widest hidden sm:inline">Back</span>
                     </Link>
 
-                    <div className="flex items-center gap-2 md:gap-4">
+                    <div className="flex items-center gap-1.5 md:gap-4">
                         <button
                             onClick={shuffleColors}
-                            className="flex items-center gap-2 px-3 md:px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-black rounded-full text-xs md:text-sm font-bold transition-all active:scale-95"
+                            className="flex items-center gap-2 px-2.5 md:px-5 py-2.5 bg-gray-100/80 hover:bg-gray-200 text-black rounded-full text-xs md:text-sm font-bold transition-all active:scale-95"
                             title="Shuffle Layout"
                         >
                             <RefreshCw size={16} /> <span className="hidden sm:inline">Shuffle</span>
                         </button>
                         <button
                             onClick={() => setIsExportModalOpen(true)}
-                            className="flex items-center gap-2 px-3 md:px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-black rounded-full text-xs md:text-sm font-bold transition-all active:scale-95"
+                            className="flex items-center gap-2 px-2.5 md:px-5 py-2.5 bg-gray-100/80 hover:bg-gray-200 text-black rounded-full text-xs md:text-sm font-bold transition-all active:scale-95"
                             title="Export"
                         >
                             <Download size={16} /> <span className="hidden sm:inline">Export</span>
@@ -618,7 +618,7 @@ export default function BrandKit() {
                 </aside>
 
                 {/* Live Preview Area */}
-                <main className="lg:col-span-9 p-6 md:p-12 lg:p-20 bg-gray-50/50 flex flex-col items-center justify-start overflow-y-auto lg:h-full">
+                <main className="lg:col-span-9 p-4 md:p-12 lg:p-20 bg-gray-50/50 flex flex-col items-center justify-start overflow-y-auto lg:h-full">
                     <motion.div
                         key={activeCombo}
                         initial={{ opacity: 0, y: 20 }}
@@ -628,7 +628,7 @@ export default function BrandKit() {
                     >
                         {/* Main Brand Showcase */}
                         <div
-                            className="w-full aspect-square md:aspect-[21/9] rounded-[32px] md:rounded-[48px] p-8 md:p-12 shadow-2xl flex flex-col justify-center items-center text-center gap-6 relative overflow-hidden transition-all duration-700"
+                            className="w-full aspect-[4/5] md:aspect-[21/9] rounded-[2rem] md:rounded-[48px] p-6 md:p-12 shadow-2xl flex flex-col justify-center items-center text-center gap-4 md:gap-6 relative overflow-hidden transition-all duration-700"
                             style={{ backgroundColor: background }}
                         >
                             {/* Decorative background shapes */}
@@ -645,10 +645,10 @@ export default function BrandKit() {
                                 <Palette size={40} />
                             </motion.div>
 
-                            <h2 className="text-4xl md:text-6xl lg:text-8xl font-bold tracking-tighter leading-none" style={{ color: primary }}>
+                            <h2 className="text-[10vw] md:text-6xl lg:text-8xl font-bold tracking-tighter leading-none" style={{ color: primary }}>
                                 Craft your identity.
                             </h2>
-                            <p className="max-w-xl text-lg md:text-xl opacity-60 leading-relaxed" style={{ color: primary }}>
+                            <p className="max-w-[280px] md:max-w-xl text-base md:text-xl opacity-60 leading-relaxed font-medium" style={{ color: primary }}>
                                 Experiment with {kitName} palette and <span className="font-bold underline">{selectedFont.name}</span> typography to create a high-end visual language.
                             </p>
                             <button className="px-10 py-4 rounded-full text-sm font-bold uppercase tracking-widest mt-4 shadow-xl hover:scale-105 transition-transform" style={{ backgroundColor: secondary, color: background === '#FFFFFF' ? '#000' : '#FFF' }}>
