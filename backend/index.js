@@ -3,18 +3,26 @@ const { ApolloServer } = require('@apollo/server');
 const { expressMiddleware } = require('@as-integrations/express4');
 const cors = require('cors');
 const helmet = require('helmet');
-const dotenv = require('dotenv');
+
+// Solo cargamos dotenv en local. En Railway las variables ya están en el sistema.
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config();
+}
+
+// Permitir conexiones balanceadas/pooler si es necesario
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-require('dotenv').config();
+
 console.log('🔄 Iniciando Aura Backend...');
+console.log('📡 Verificando variables críticas:');
+console.log('- DATABASE_URL:', process.env.DATABASE_URL ? '✅ Cargada' : '❌ NO DETECTADA');
+console.log('- STRIPE_KEY:', process.env.STRIPE_SECRET_KEY ? '✅ Cargada' : '❌ NO DETECTADA');
+
 const { PrismaClient } = require('@prisma/client');
 const { createClient } = require('@supabase/supabase-js');
 const { generatePalette } = require('./services/aiService');
 
 const { Pool } = require('pg');
 const { PrismaPg } = require('@prisma/adapter-pg');
-
-dotenv.config();
 
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
