@@ -6,6 +6,7 @@ const helmet = require('helmet');
 const dotenv = require('dotenv');
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 require('dotenv').config();
+console.log('🔄 Iniciando Aura Backend...');
 const { PrismaClient } = require('@prisma/client');
 const { createClient } = require('@supabase/supabase-js');
 const { generatePalette } = require('./services/aiService');
