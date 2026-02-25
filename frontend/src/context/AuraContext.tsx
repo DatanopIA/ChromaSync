@@ -4,7 +4,12 @@ import { request, gql } from "graphql-request";
 
 const SUPABASE_URL = (import.meta as any).env.VITE_SUPABASE_URL || "https://olmvkmyyqfpdhxfaozsp.supabase.co";
 const SUPABASE_ANON_KEY = (import.meta as any).env.VITE_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9sbXZrbXl5cWZwZGh4ZmFvenNwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5MjUzNzgsImV4cCI6MjA4NzUwMTM3OH0.Y-er__uYzvP50bqprPZLWjl-yAdvJ2mVNpFy560eBUY";
-const GRAPHQL_ENDPOINT = (import.meta as any).env.VITE_GRAPHQL_ENDPOINT || "https://chromasync-production.up.railway.app/graphql";
+
+// Lógica inteligente: Si estamos en local (nuestro PC), usa localhost. Si no, usa Railway.
+const isLocal = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+const GRAPHQL_ENDPOINT = isLocal
+  ? "http://localhost:4000/graphql"
+  : "https://chromasync-production.up.railway.app/graphql";
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
