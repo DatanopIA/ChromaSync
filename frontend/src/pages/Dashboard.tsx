@@ -332,7 +332,7 @@ export default function Dashboard() {
 
         {/* Mobile Layout - Aurora Background */}
         <div className="md:hidden absolute inset-0">
-          <AuroraBackground className="h-full w-full opacity-40">
+          <AuroraBackground className="h-full w-full opacity-80 bg-transparent dark:bg-transparent">
             <span className="sr-only">Aurora Background</span>
           </AuroraBackground>
         </div>

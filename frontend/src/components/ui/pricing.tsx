@@ -130,15 +130,15 @@ function Star({
             style={{
                 top: initialPos.top,
                 left: initialPos.left,
-                width: `${1.5 + Math.random() * 2.5}px`, // Slightly larger stars
-                height: `${1.5 + Math.random() * 2.5}px`,
+                width: `${2 + Math.random() * 3}px`,
+                height: `${2 + Math.random() * 3}px`,
                 x: springX,
                 y: springY,
             }}
             initial={{ opacity: 0 }}
-            animate={{ opacity: [0, 0.7, 0] }}
+            animate={{ opacity: [0.1, 0.8, 0.1] }}
             transition={{
-                duration: 2 + Math.random() * 3,
+                duration: 2 + Math.random() * 4,
                 repeat: Infinity,
                 delay: Math.random() * 5,
             }}
