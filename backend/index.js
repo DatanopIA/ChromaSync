@@ -142,6 +142,10 @@ app.use(helmet({
     contentSecurityPolicy: false, // For Apollo Sandbox
 }));
 app.use(cors());
+app.get('/', (req, res) => {
+    res.send('🚀 Aura Backend está funcionando correctamente. GraphQL disponible en /graphql');
+});
+
 app.use(authenticate);
 
 // Basic health check
