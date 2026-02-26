@@ -56,8 +56,8 @@ async function createCheckoutSession(customerEmail, priceId) {
                 },
             ],
             mode: 'subscription',
-            success_url: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/success?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/pricing`,
+            success_url: `${process.env.FRONTEND_URL || 'https://chroma-sync-aura.vercel.app'}/success?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${process.env.FRONTEND_URL || 'https://chroma-sync-aura.vercel.app'}/pricing`,
         };
 
         if (customerEmail) {
