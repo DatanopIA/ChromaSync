@@ -15,7 +15,7 @@ export default function Landing() {
             />
 
             {/* Hero Section with Aurora */}
-            <section className="relative h-screen w-full flex flex-col items-center justify-center overflow-hidden">
+            <section className="relative min-h-[100dvh] w-full flex flex-col items-center justify-center overflow-hidden py-24 md:py-0">
                 <AuroraBackground
                     className="absolute inset-0 z-0"
                     showRadialGradient={true}
@@ -39,7 +39,7 @@ export default function Landing() {
                         transition={{ duration: 0.8, delay: 0.2 }}
                         className="flex flex-col gap-4"
                     >
-                        <h1 className="text-5xl md:text-8xl font-black tracking-tighter leading-tight bg-clip-text text-transparent bg-gradient-to-b from-foreground to-foreground/50">
+                        <h1 className="text-4xl sm:text-5xl md:text-8xl font-black tracking-tighter leading-[0.9] bg-clip-text text-transparent bg-gradient-to-b from-foreground to-foreground/50">
                             EL COLOR DE TU AURA,<br />
                             <span className="text-cyan-400">SINCRONIZADO POR IA</span>
                         </h1>
@@ -75,7 +75,7 @@ export default function Landing() {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 1, duration: 1 }}
-                        className="absolute bottom-12 flex flex-col items-center gap-2 text-muted-foreground"
+                        className="hidden md:flex absolute bottom-8 flex-col items-center gap-2 text-muted-foreground"
                     >
                         <span className="text-xs font-bold uppercase tracking-[0.3em]">Desliza para descubrir</span>
                         <motion.div
@@ -87,9 +87,8 @@ export default function Landing() {
                 </div>
             </section>
 
-            {/* Stats Section */}
-            <section className="py-24 bg-background border-y border-border overflow-hidden">
-                <div className="max-w-[1400px] mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-12 text-center">
+            <section className="py-16 md:py-24 bg-background border-y border-border overflow-hidden">
+                <div className="max-w-[1400px] mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 text-center">
                     {[
                         { label: "Paletas creadas", val: "2.4M+" },
                         { label: "Usuarios activos", val: "150k+" },
@@ -132,10 +131,10 @@ export default function Landing() {
             {/* Features - Dynamic Grid */}
             <section className="py-32 px-6 relative overflow-hidden">
                 <div className="max-w-[1400px] mx-auto">
-                    <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
-                        <div className="flex flex-col gap-4">
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 md:mb-20 gap-8">
+                        <div className="flex flex-col gap-4 text-left">
                             <span className="text-cyan-400 font-bold uppercase tracking-[0.2em] text-sm">Tecnología de Vanguardia</span>
-                            <h2 className="text-4xl md:text-6xl font-black tracking-tighter">DISEÑADO PARA<br />LA NUEVA ERA</h2>
+                            <h2 className="text-4xl md:text-6xl font-black tracking-tighter leading-none">DISEÑADO PARA<br />LA NUEVA ERA</h2>
                         </div>
                         <p className="max-w-md text-muted-foreground text-lg leading-relaxed">
                             No es solo un generador. Es un ecosistema completo para construir identidades visuales coherentes de forma instantánea.
@@ -165,10 +164,10 @@ export default function Landing() {
             {/* High-Impact Visual Section (Interactive Showcase) */}
             <section className="py-20 px-4">
                 <div className="max-w-[1400px] mx-auto rounded-[3rem] overflow-hidden relative shadow-2xl border border-border bg-neutral-950 flex flex-col md:flex-row items-center">
-                    <div className="flex-1 p-12 md:p-20 flex flex-col gap-8">
+                    <div className="flex-1 p-8 md:p-20 flex flex-col gap-6 md:gap-8 text-left">
                         <span className="text-cyan-400 font-bold uppercase tracking-[0.2em] text-sm">Tu Marca, Tu Aura</span>
-                        <h3 className="text-4xl md:text-6xl font-black text-white tracking-tighter leading-none">LA IA QUE<br /><span className="text-muted-foreground">SINTETIZA</span><br />TUS IDEAS</h3>
-                        <p className="text-white/60 text-lg max-w-sm">No piques piedra buscando el color perfecto. Deja que nuestra red neuronal lo encuentre por ti.</p>
+                        <h3 className="text-3xl md:text-6xl font-black text-white tracking-tighter leading-[0.9]">LA IA QUE<br /><span className="text-neutral-500">SINTETIZA</span><br />TUS IDEAS</h3>
+                        <p className="text-white/60 text-base md:text-lg max-w-sm">No piques piedra buscando el color perfecto. Deja que nuestra red neuronal lo encuentre por ti.</p>
                         <div>
                             <Link to="/generator" className="inline-flex items-center gap-2 text-white font-bold border-b-2 border-cyan-400 pb-1 hover:text-cyan-400 transition-colors">
                                 Pruebalo ahora <ArrowRight size={18} />
@@ -176,7 +175,7 @@ export default function Landing() {
                         </div>
                     </div>
 
-                    <div className="flex-1 w-full h-[500px] md:h-auto self-stretch relative overflow-hidden flex">
+                    <div className="flex-1 w-full h-[300px] md:h-auto self-stretch relative overflow-hidden flex">
                         {[
                             ["#f97316", "#fb923c", "#fdba74", "#fed7aa", "#fff7ed"],
                             ["#0ea5e9", "#38bdf8", "#7dd3fc", "#bae6fd", "#f0f9ff"],
@@ -220,7 +219,7 @@ export default function Landing() {
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-purple-500/20 blur-[120px] rounded-full pointer-events-none" />
 
                 <div className="relative z-10 max-w-3xl mx-auto flex flex-col gap-10">
-                    <h2 className="text-5xl md:text-7xl font-black tracking-tighter">¿LISTO PARA LLEVAR TU DISEÑO AL SIGUIENTE NIVEL?</h2>
+                    <h2 className="text-4xl md:text-7xl font-black tracking-tighter leading-[1]">¿LISTO PARA LLEVAR TU DISEÑO AL SIGUIENTE NIVEL?</h2>
                     <div className="flex flex-col md:flex-row justify-center gap-4">
                         <Link
                             to="/generator"
