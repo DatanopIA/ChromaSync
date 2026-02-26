@@ -37,17 +37,17 @@ export default function Generator() {
   }, [location.state]);
 
   const SENSATIONS = [
-    { name: "Montaña", icon: "🏔️", prompt: "A breathe of fresh mountain air, earthy greens and rock grays" },
-    { name: "Océano", icon: "🌊", prompt: "Deep ocean blues, turquoise shallow waters and seafoam white" },
-    { name: "Atardecer", icon: "🌇", prompt: "Warm sunset oranges, deep purples and golden hour yellows" },
-    { name: "Cyberpunk", icon: "⚡", prompt: "Neon pinks, electric blues and dark tech grays" },
-    { name: "Minimalista", icon: "⚪", prompt: "Soft whites, subtle grays and clean black accents" },
-    { name: "Bosque", icon: "🌲", prompt: "Deep forest greens, wood browns and misty grays" },
-    { name: "Retro", icon: "📼", prompt: "Vintage 80s colors, faded oranges and cream backgrounds" },
-    { name: "Lujo Silencioso", icon: "💎", prompt: "Quiet luxury palette, cashmere beiges, soft creams and deep navy accents" },
-    { name: "Energía Tropical", icon: "🦜", prompt: "Bright tropical vibes, parrot greens, vibrant yellows and exotic pinks" },
-    { name: "Primavera Japonesa", icon: "🌸", prompt: "Japanese spring, sakura pinks, soft matcha greens and light wood tones" },
-    { name: "Noche Nórdica", icon: "❄️", prompt: "Scandinavian winter night, icy blues, deep charcoals and warm fire flickers" }
+    { name: "Montaña", icon: "🏔️", prompt: "Un soplo de aire fresco de montaña, verdes terrosos y grises de roca" },
+    { name: "Océano", icon: "🌊", prompt: "Azules profundos del océano, aguas turquesas poco profundas y blanco espuma de mar" },
+    { name: "Atardecer", icon: "🌇", prompt: "Naranjas cálidos de atardecer, púrpuras profundos y amarillos de la hora dorada" },
+    { name: "Cyberpunk", icon: "⚡", prompt: "Rosas neón, azules eléctricos y grises tecnológicos oscuros" },
+    { name: "Minimalista", icon: "⚪", prompt: "Blancos suaves, grises sutiles y acentos negros limpios" },
+    { name: "Bosque", icon: "🌲", prompt: "Verdes intensos del bosque, marrones madera y grises neblinosos" },
+    { name: "Retro", icon: "📼", prompt: "Colores vintage de los 80, naranjas desgastados y fondos crema" },
+    { name: "Lujo Silencioso", icon: "💎", prompt: "Paleta de lujo silencioso, beiges cachemira, cremas suaves y acentos azul marino profundo" },
+    { name: "Energía Tropical", icon: "🦜", prompt: "Vibras tropicales brillantes, verdes loro, amarillos vibrantes y rosas exóticos" },
+    { name: "Primavera Japonesa", icon: "🌸", prompt: "Primavera japonesa, rosas sakura, verdes matcha suaves y tonos de madera clara" },
+    { name: "Noche Nórdica", icon: "❄️", prompt: "Noche de invierno escandinava, azules helados, carbones profundos y destellos de fuego cálidos" }
   ];
 
   const generateRandomHex = () => {

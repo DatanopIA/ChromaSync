@@ -8,7 +8,7 @@ import { AuroraBackground } from "@/components/ui/aurora-background";
 const categories = [
   {
     id: "trending",
-    name: "Trending",
+    name: "Tendencias",
     description: "Paletas dinámicas que capturan el pulso visual del momento.",
     image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=800&h=1000",
     palette: ["#121212", "#3D2C8D", "#916BBF", "#C996CC", "#FFD6FF"],
@@ -16,7 +16,7 @@ const categories = [
   },
   {
     id: "minimalist",
-    name: "Minimalist",
+    name: "Minimalista",
     description: "La elegancia de lo esencial a través de tonos neutros y equilibrio.",
     image: "https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?auto=format&fit=crop&q=80&w=800&h=1000",
     palette: ["#F9F9F9", "#EAEAEA", "#D4D4D4", "#A3A3A3", "#525252"],
@@ -24,7 +24,7 @@ const categories = [
   },
   {
     id: "darkmode",
-    name: "Dark Mode",
+    name: "Modo Oscuro",
     description: "Contrastes profundos optimizados para interfaces modernas y nocturnas.",
     image: "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?auto=format&fit=crop&q=80&w=800&h=1000",
     palette: ["#020617", "#0F172A", "#1E293B", "#334155", "#94A3B8"],
@@ -32,7 +32,7 @@ const categories = [
   },
   {
     id: "vibrant",
-    name: "Vibrant",
+    name: "Vibrante",
     description: "Explosiones cromáticas diseñadas para destacar y energizar.",
     image: "https://images.unsplash.com/photo-1563089145-599997674d42?auto=format&fit=crop&q=80&w=800&h=1000",
     palette: ["#FF00FF", "#00D2FF", "#9D00FF", "#FFD700", "#121212"],
@@ -109,11 +109,11 @@ export default function Dashboard() {
               {activeCategory.description}
             </h2>
             <p className="text-muted-foreground text-lg max-w-md leading-relaxed">
-              Premium color palettes carefully designed and refined for fashion, lifestyle, and high-end digital experiences worldwide.
+              Paletas de color premium cuidadosamente diseñadas y refinadas para moda, estilo de vida y experiencias digitales de alto nivel en todo el mundo.
             </p>
 
             <div className="flex flex-col gap-4 mt-8">
-              <h3 className="text-sm font-semibold tracking-widest uppercase text-foreground mb-2">Categories</h3>
+              <h3 className="text-sm font-semibold tracking-widest uppercase text-foreground mb-2">Categorías</h3>
               {categories.map((cat) => (
                 <div
                   key={cat.id}
@@ -183,8 +183,8 @@ export default function Dashboard() {
               </div>
               <div className="flex justify-between items-center text-white relative z-10 gap-2">
                 <div className="flex flex-col">
-                  <span className="text-[8px] md:text-[10px] font-bold uppercase tracking-[0.2em] text-white/50 mb-1">Concept Studio</span>
-                  <span className="font-medium text-base md:text-lg">{activeCategory.name} Vision</span>
+                  <span className="text-[8px] md:text-[10px] font-bold uppercase tracking-[0.2em] text-white/50 mb-1">Estudio de Concepto</span>
+                  <span className="font-medium text-base md:text-lg">Visión {activeCategory.name}</span>
                 </div>
                 <button
                   onClick={() => navigate("/brandkit", { state: { colors: activeCategory.palette, name: activeCategory.name } })}
@@ -291,9 +291,9 @@ export default function Dashboard() {
       {/* Recent Projects */}
       <section className="flex flex-col gap-12">
         <div className="flex items-end justify-between border-b border-border pb-6">
-          <h2 className="text-3xl font-medium">Recent Palettes</h2>
+          <h2 className="text-3xl font-medium">Paletas Recientes</h2>
           <Link to="/projects" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2">
-            View All <ArrowRight size={16} />
+            Ver Todas <ArrowRight size={16} />
           </Link>
         </div>
 
@@ -364,7 +364,7 @@ export default function Dashboard() {
             viewport={{ once: true }}
             className="flex flex-col gap-4 items-center w-full"
           >
-            <span className="text-xs font-bold uppercase tracking-[0.4em] text-white/40">Next Generation Color Tool</span>
+            <span className="text-xs font-bold uppercase tracking-[0.4em] text-white/40">HERRAMIENTA DE COLOR DE NUEVA GENERACIÓN</span>
 
             {/* Conditional Rendering for Text Style */}
             <div className="hidden md:block w-full">

@@ -4,11 +4,11 @@ import { motion } from "framer-motion";
 import Logo from "./Logo";
 
 const integrations = [
-    { name: "Google AI", category: "Intelligence", color: "from-blue-400 to-red-400" },
-    { name: "Supabase", category: "Infrastructure", color: "from-emerald-400 to-emerald-600" },
-    { name: "Stripe", category: "Payments", color: "from-indigo-400 to-purple-500" },
-    { name: "Figma", category: "Design", color: "from-orange-400 to-pink-500" },
-    { name: "Adobe CC", category: "Creative", color: "from-red-500 to-red-600" },
+    { name: "Google AI", category: "Inteligencia", color: "from-blue-400 to-red-400" },
+    { name: "Supabase", category: "Infraestructura", color: "from-emerald-400 to-emerald-600" },
+    { name: "Stripe", category: "Pagos", color: "from-indigo-400 to-purple-500" },
+    { name: "Figma", category: "Diseño", color: "from-orange-400 to-pink-500" },
+    { name: "Adobe CC", category: "Creatividad", color: "from-red-500 to-red-600" },
 ];
 
 export default function Footer() {

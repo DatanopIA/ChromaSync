@@ -10,11 +10,11 @@ import Logo from "./Logo";
 import { AuroraBackground } from "./ui/aurora-background";
 
 const navItems = [
-  { name: "Dashboard", path: "/" },
-  { name: "Generator", path: "/generator" },
-  { name: "Projects", path: "/projects" },
-  { name: "Community", path: "/community" },
-  { name: "Pricing", path: "/pricing" },
+  { name: "Panel", path: "/" },
+  { name: "Generador", path: "/generator" },
+  { name: "Proyectos", path: "/projects" },
+  { name: "Comunidad", path: "/community" },
+  { name: "Precios", path: "/pricing" },
 ];
 
 export default function Layout({ children }: { children: ReactNode }) {
@@ -91,7 +91,7 @@ export default function Layout({ children }: { children: ReactNode }) {
                       src={user.user_metadata.avatar_url || "https://picsum.photos/seed/avatar/100/100"}
                       className="w-8 h-8 rounded-full border-2 border-white object-cover"
                       referrerPolicy="no-referrer"
-                      alt="User avatar"
+                      alt="Avatar de usuario"
                     />
                   </div>
                   <span className="text-sm font-bold text-gray-500 group-hover:text-black transition-colors hidden lg:inline">
@@ -149,7 +149,7 @@ export default function Layout({ children }: { children: ReactNode }) {
               className="fixed right-0 top-0 bottom-0 w-[80%] max-w-sm bg-background z-[70] shadow-2xl p-8 flex flex-col gap-12"
             >
               <div className="flex items-center justify-between">
-                <span className="font-bold text-xl">Menu</span>
+                <span className="font-bold text-xl">Menú</span>
                 <button
                   onClick={() => setIsMobileMenuOpen(false)}
                   className="p-2 bg-gray-50 rounded-full"

@@ -95,9 +95,9 @@ export default function Projects() {
             animate={{ opacity: 1, y: 0 }}
             className="text-3xl md:text-5xl font-medium tracking-tight"
           >
-            Projects
+            Proyectos
           </motion.h1>
-          <p className="text-gray-500 text-base md:text-lg">Your saved color palettes and collections.</p>
+          <p className="text-gray-500 text-base md:text-lg">Tus paletas y colecciones de color guardadas.</p>
         </div>
 
         <div className="flex items-center gap-3 md:gap-4 w-full md:w-auto">
@@ -105,7 +105,7 @@ export default function Projects() {
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
             <input
               type="text"
-              placeholder="Search palettes..."
+              placeholder="Buscar paletas..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-12 pr-4 py-3 bg-gray-50 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-black/5 transition-all"

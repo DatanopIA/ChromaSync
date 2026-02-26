@@ -58,14 +58,14 @@ export default function PalettePreview() {
             <div className="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-gray-100 px-6 h-16 flex items-center justify-between">
                 <Link to="/community" className="flex items-center gap-2 text-gray-500 hover:text-black transition-colors">
                     <ArrowLeft size={20} />
-                    <span className="font-medium text-sm">Back to Community</span>
+                    <span className="font-medium text-sm">Volver a la Comunidad</span>
                 </Link>
                 <div className="flex items-center gap-3">
                     <button
                         onClick={handleRemix}
                         className="flex items-center gap-2 px-4 py-2 bg-black text-white rounded-full text-xs font-bold uppercase tracking-widest hover:bg-gray-800 transition-all"
                     >
-                        <Zap size={14} /> Remix
+                        <Zap size={14} /> Remixear
                     </button>
                     <button
                         onClick={handleCopy}
@@ -122,7 +122,7 @@ export default function PalettePreview() {
                             <div className="flex items-center justify-between border-b border-gray-50 pb-6">
                                 <h3 className="font-bold flex items-center gap-2">
                                     <LayoutIcon size={18} style={{ color: palette.colors[1] }} />
-                                    Dashboard Application
+                                    Panel de Aplicación
                                 </h3>
                                 <div className="flex gap-2">
                                     <div className="w-3 h-3 rounded-full" style={{ backgroundColor: palette.colors[0] }} />
@@ -202,16 +202,16 @@ export default function PalettePreview() {
 
                         {/* Typography Preview */}
                         <div className="bg-white rounded-[32px] p-8 shadow-sm border border-gray-100 flex flex-col gap-6">
-                            <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest">Typography</h4>
+                            <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest">Tipografía</h4>
                             <div className="flex flex-col gap-4">
-                                <h1 className="text-4xl font-bold" style={{ color: palette.colors[3] }}>Headings</h1>
+                                <h1 className="text-4xl font-bold" style={{ color: palette.colors[3] }}>Encabezados</h1>
                                 <p className="text-base" style={{ color: palette.colors[3] }}>
-                                    A visual display of how your selected palette communicates through text hierarchy.
+                                    Muestra visual de cómo tu paleta seleccionada se comunica a través de la jerarquía de texto.
                                 </p>
                                 <div className="flex flex-wrap gap-2">
                                     {palette.colors.map((c, i) => (
                                         <span key={i} className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-gray-50" style={{ color: c }}>
-                                            Sample Tag
+                                            Ejemplo
                                         </span>
                                     ))}
                                 </div>

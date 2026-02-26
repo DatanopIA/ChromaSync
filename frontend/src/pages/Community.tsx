@@ -58,21 +58,21 @@ const communityPalettes = [
 ];
 
 const MODES = [
-  { id: "all", label: "All Sensations", icon: <Sparkles size={16} /> },
-  { id: "energetic", label: "Energetic", icon: <Zap size={16} /> },
-  { id: "calm", label: "Calm", icon: <Cloud size={16} /> },
-  { id: "warm", label: "Warm & Cozy", icon: <Sun size={16} /> },
-  { id: "dreamy", label: "Dreamy", icon: <Moon size={16} /> },
-  { id: "minimalist", label: "Minimalist", icon: <Coffee size={16} /> },
+  { id: "all", label: "Todas las sensaciones", icon: <Sparkles size={16} /> },
+  { id: "energetic", label: "Enérgico", icon: <Zap size={16} /> },
+  { id: "calm", label: "Calma", icon: <Cloud size={16} /> },
+  { id: "warm", label: "Cálido y acogedor", icon: <Sun size={16} /> },
+  { id: "dreamy", label: "Onírico", icon: <Moon size={16} /> },
+  { id: "minimalist", label: "Minimalista", icon: <Coffee size={16} /> },
 ];
 
 const CATEGORIES = [
-  { id: "all", label: "All Styles" },
-  { id: "neon", label: "Neon" },
-  { id: "gradient", label: "Gradients" },
-  { id: "pastel", label: "Pastels" },
-  { id: "monochrome", label: "Monochrome" },
-  { id: "nature", label: "Nature" },
+  { id: "all", label: "Todos los estilos" },
+  { id: "neon", label: "Neón" },
+  { id: "gradient", label: "Degradados" },
+  { id: "pastel", label: "Pasteles" },
+  { id: "monochrome", label: "Monocromo" },
+  { id: "nature", label: "Naturaleza" },
 ];
 
 import { useNavigate } from "react-router-dom";
@@ -138,9 +138,9 @@ export default function Community() {
             animate={{ opacity: 1, y: 0 }}
             className="text-3xl md:text-5xl font-medium tracking-tight flex items-center gap-3"
           >
-            Community
+            Comunidad
           </motion.h1>
-          <p className="text-gray-500 text-base md:text-lg">Discover and get inspired by palettes from creators worldwide.</p>
+          <p className="text-gray-500 text-base md:text-lg">Descubre e inspírate con paletas de creadores de todo el mundo.</p>
         </div>
 
         <div className="flex items-center gap-3 md:gap-4 w-full md:w-auto">
@@ -148,7 +148,7 @@ export default function Community() {
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
             <input
               type="text"
-              placeholder="Search palettes, tags, users..."
+              placeholder="Buscar paletas, etiquetas, usuarios..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-12 pr-4 py-3 bg-gray-50 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-black/5 transition-all"
@@ -212,7 +212,7 @@ export default function Community() {
                       onClick={() => { setSelectedMood("all"); setSelectedCategory("all"); }}
                       className="text-xs font-medium text-red-500 hover:text-red-600 transition-colors text-center pt-2 border-t border-gray-50"
                     >
-                      Reset all filters
+                      Restablecer filtros
                     </button>
                   )}
                 </motion.div>
@@ -227,7 +227,7 @@ export default function Community() {
           onClick={() => setActiveTab("trending")}
           className={`flex items-center gap-2 pb-4 -mb-4 font-medium transition-all relative whitespace-nowrap ${activeTab === "trending" ? "text-black" : "text-gray-500 hover:text-black"}`}
         >
-          <TrendingUp size={18} /> Trending
+          <TrendingUp size={18} /> Tendencias
           {activeTab === "trending" && (
             <motion.div layoutId="activeTab" className="absolute bottom-0 left-0 right-0 h-0.5 bg-black" />
           )}
@@ -236,7 +236,7 @@ export default function Community() {
           onClick={() => setActiveTab("new")}
           className={`flex items-center gap-2 pb-4 -mb-4 font-medium transition-all relative whitespace-nowrap ${activeTab === "new" ? "text-black" : "text-gray-500 hover:text-black"}`}
         >
-          <Award size={18} /> New & Noteworthy
+          <Award size={18} /> Novedades y Destacados
           {activeTab === "new" && (
             <motion.div layoutId="activeTab" className="absolute bottom-0 left-0 right-0 h-0.5 bg-black" />
           )}
@@ -294,7 +294,7 @@ export default function Community() {
                       onClick={(e) => { e.stopPropagation(); handleRemix(palette); }}
                       className="px-4 py-2 bg-white text-black rounded-full text-xs font-bold uppercase tracking-widest hover:scale-105 active:scale-95 transition-all flex items-center gap-2"
                     >
-                      <Zap size={14} /> Remix
+                      <Zap size={14} /> Remixear
                     </button>
                     <button
                       onClick={(e) => { e.stopPropagation(); handleCopy(palette); }}
