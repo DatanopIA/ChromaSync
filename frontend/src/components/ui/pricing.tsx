@@ -70,13 +70,16 @@ Button.displayName = "Button";
 
 // --- INTERACTIVE STARFIELD ---
 
+interface StarProps {
+    mousePosition: { x: number | null; y: number | null };
+    containerRef: React.RefObject<HTMLDivElement>;
+    key?: React.Key;
+}
+
 function Star({
     mousePosition,
     containerRef,
-}: {
-    mousePosition: { x: number | null; y: number | null };
-    containerRef: React.RefObject<HTMLDivElement>;
-}) {
+}: StarProps) {
     const [initialPos] = useState({
         top: `${Math.random() * 100}%`,
         left: `${Math.random() * 100}%`,
@@ -244,7 +247,14 @@ export function PricingSection({
     );
 }
 
-function PricingCard({ plan, index, currencySymbol }: { plan: PricingPlan; index: number; currencySymbol: string }) {
+interface PricingCardProps {
+    plan: PricingPlan;
+    index: number;
+    currencySymbol: string;
+    key?: React.Key;
+}
+
+function PricingCard({ plan, index, currencySymbol }: PricingCardProps) {
     return (
         <motion.div
             initial={{ y: 30, opacity: 0 }}
