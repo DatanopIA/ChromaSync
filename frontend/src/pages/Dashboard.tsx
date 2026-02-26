@@ -226,7 +226,7 @@ export default function Dashboard() {
               title: "Extractor de Imagen",
               desc: "Extrae la esencia cromática de cualquier fotografía de forma instantánea.",
               icon: <Image className="w-6 h-6" />,
-              accent: "from-orange-500/20 to-red-500/20",
+              accent: "from-cyan-500/20 to-indigo-500/20",
               link: "/generator"
             },
             {

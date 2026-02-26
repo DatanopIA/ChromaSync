@@ -86,7 +86,7 @@ export default function Layout({ children }: { children: ReactNode }) {
               <div className="flex items-center gap-4">
                 <NotificationBell />
                 <Link to="/settings" className="flex items-center gap-2 group transition-all">
-                  <div className="relative p-0.5 rounded-full bg-gradient-to-tr from-orange-400 via-pink-500 to-blue-500 group-hover:scale-105 transition-transform duration-300">
+                  <div className="relative p-0.5 rounded-full bg-gradient-to-tr from-cyan-400 via-purple-500 to-fuchsia-500 group-hover:scale-105 transition-transform duration-300">
                     <img
                       src={user.user_metadata.avatar_url || "https://picsum.photos/seed/avatar/100/100"}
                       className="w-8 h-8 rounded-full border-2 border-white object-cover"

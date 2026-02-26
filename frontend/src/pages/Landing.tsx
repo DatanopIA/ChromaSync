@@ -41,7 +41,7 @@ export default function Landing() {
                     >
                         <h1 className="text-5xl md:text-8xl font-black tracking-tighter leading-tight bg-clip-text text-transparent bg-gradient-to-b from-foreground to-foreground/50">
                             EL COLOR DE TU AURA,<br />
-                            <span className="text-orange-500">SINCRONIZADO POR IA</span>
+                            <span className="text-cyan-400">SINCRONIZADO POR IA</span>
                         </h1>
                         <p className="text-muted-foreground text-lg md:text-2xl max-w-2xl mx-auto font-medium">
                             Transforma emociones, imágenes y conceptos en sistemas de color profesionales con el motor de IA más avanzado del mundo.
@@ -58,7 +58,7 @@ export default function Landing() {
                             to="/generator"
                             className="group relative px-10 py-5 bg-foreground text-background rounded-full font-bold text-lg overflow-hidden transition-transform hover:scale-105 active:scale-95"
                         >
-                            <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-pink-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                            <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                             <span className="relative z-10 flex items-center gap-2">
                                 Comenzar Ahora <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
                             </span>
@@ -81,7 +81,7 @@ export default function Landing() {
                         <motion.div
                             animate={{ y: [0, 8, 0] }}
                             transition={{ repeat: Infinity, duration: 2 }}
-                            className="w-1 h-8 bg-gradient-to-b from-orange-500 to-transparent rounded-full"
+                            className="w-1 h-8 bg-gradient-to-b from-cyan-400 to-transparent rounded-full"
                         />
                     </motion.div>
                 </div>
@@ -112,7 +112,7 @@ export default function Landing() {
             </section>
 
             {/* Marquee Section */}
-            <div className="py-6 bg-orange-500 overflow-hidden whitespace-nowrap flex border-y border-black">
+            <div className="py-6 bg-cyan-400 overflow-hidden whitespace-nowrap flex border-y border-black">
                 <motion.div
                     animate={{ x: ["0%", "-50%"] }}
                     transition={{ repeat: Infinity, duration: 20, ease: "linear" }}
@@ -134,7 +134,7 @@ export default function Landing() {
                 <div className="max-w-[1400px] mx-auto">
                     <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
                         <div className="flex flex-col gap-4">
-                            <span className="text-orange-500 font-bold uppercase tracking-[0.2em] text-sm">Tecnología de Vanguardia</span>
+                            <span className="text-cyan-400 font-bold uppercase tracking-[0.2em] text-sm">Tecnología de Vanguardia</span>
                             <h2 className="text-4xl md:text-6xl font-black tracking-tighter">DISEÑADO PARA<br />LA NUEVA ERA</h2>
                         </div>
                         <p className="max-w-md text-muted-foreground text-lg leading-relaxed">
@@ -144,7 +144,7 @@ export default function Landing() {
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                         <FeatureCard
-                            icon={<Zap className="text-orange-500" />}
+                            icon={<Zap className="text-cyan-400" />}
                             title="Generación en Milisegundos"
                             description="Basado en Google Gemini Pro, entiende el contexto emocional de tu marca."
                         />
@@ -166,11 +166,11 @@ export default function Landing() {
             <section className="py-20 px-4">
                 <div className="max-w-[1400px] mx-auto rounded-[3rem] overflow-hidden relative shadow-2xl border border-border bg-neutral-950 flex flex-col md:flex-row items-center">
                     <div className="flex-1 p-12 md:p-20 flex flex-col gap-8">
-                        <span className="text-orange-500 font-bold uppercase tracking-[0.2em] text-sm">Tu Marca, Tu Aura</span>
+                        <span className="text-cyan-400 font-bold uppercase tracking-[0.2em] text-sm">Tu Marca, Tu Aura</span>
                         <h3 className="text-4xl md:text-6xl font-black text-white tracking-tighter leading-none">LA IA QUE<br /><span className="text-muted-foreground">SINTETIZA</span><br />TUS IDEAS</h3>
                         <p className="text-white/60 text-lg max-w-sm">No piques piedra buscando el color perfecto. Deja que nuestra red neuronal lo encuentre por ti.</p>
                         <div>
-                            <Link to="/generator" className="inline-flex items-center gap-2 text-white font-bold border-b-2 border-orange-500 pb-1 hover:text-orange-500 transition-colors">
+                            <Link to="/generator" className="inline-flex items-center gap-2 text-white font-bold border-b-2 border-cyan-400 pb-1 hover:text-cyan-400 transition-colors">
                                 Pruebalo ahora <ArrowRight size={18} />
                             </Link>
                         </div>
@@ -202,7 +202,7 @@ export default function Landing() {
                         ))}
                         <div className="absolute inset-x-0 bottom-0 p-12 bg-gradient-to-t from-neutral-950 to-transparent">
                             <div className="flex items-center gap-4 bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/10">
-                                <div className="w-10 h-10 rounded-full bg-orange-500 flex items-center justify-center shrink-0">
+                                <div className="w-10 h-10 rounded-full bg-cyan-400 flex items-center justify-center shrink-0">
                                     <Sparkles className="text-white" size={20} />
                                 </div>
                                 <div className="flex flex-col">
@@ -217,7 +217,7 @@ export default function Landing() {
 
             {/* CTA Final */}
             <section className="py-32 px-6 text-center bg-foreground text-background relative overflow-hidden">
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-orange-500/20 blur-[120px] rounded-full pointer-events-none" />
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-purple-500/20 blur-[120px] rounded-full pointer-events-none" />
 
                 <div className="relative z-10 max-w-3xl mx-auto flex flex-col gap-10">
                     <h2 className="text-5xl md:text-7xl font-black tracking-tighter">¿LISTO PARA LLEVAR TU DISEÑO AL SIGUIENTE NIVEL?</h2>
