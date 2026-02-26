@@ -1,0 +1,72 @@
+import { Helmet } from "react-helmet-async";
+
+interface SEOProps {
+    title?: string;
+    description?: string;
+    image?: string;
+    url?: string;
+    type?: string;
+    article?: boolean;
+}
+
+export default function SEO({
+    title = "ChromaSync Aura | Generador de Paletas de Colores con IA",
+    description = "Diseña con inteligencia artificial. Análisis de psicología del color y branding profesional.",
+    image = "/og-image.png",
+    url = "https://chromasync-aura.vercel.app/",
+    type = "website"
+}: SEOProps) {
+
+    // Schema.org JSON-LD para LLMO (Optimización para IAs)
+    const structuredData = {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "ChromaSync Aura",
+        "operatingSystem": "Web, Android, iOS",
+        "applicationCategory": "DesignApplication",
+        "description": description,
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "EUR"
+        },
+        "featureList": [
+            "Generación de paletas por IA",
+            "Extracción de colores de imágenes",
+            "Análisis de psicología del color",
+            "Exportación a PDF, Figma y CSS",
+            "Comunidad de creadores"
+        ],
+        "author": {
+            "@type": "Organization",
+            "name": "DatanopIA"
+        }
+    };
+
+    return (
+        <Helmet>
+            {/* Standard Meta Tags */}
+            <title>{title}</title>
+            <meta name="description" content={description} />
+            <link rel="canonical" href={url} />
+
+            {/* Open Graph / Facebook */}
+            <meta property="og:type" content={type} />
+            <meta property="og:title" content={title} />
+            <meta property="og:description" content={description} />
+            <meta property="og:image" content={image} />
+            <meta property="og:url" content={url} />
+
+            {/* Twitter */}
+            <meta name="twitter:card" content="summary_large_image" />
+            <meta name="twitter:title" content={title} />
+            <meta name="twitter:description" content={description} />
+            <meta name="twitter:image" content={image} />
+
+            {/* JSON-LD Structured Data */}
+            <script type="application/ld+json">
+                {JSON.stringify(structuredData)}
+            </script>
+        </Helmet>
+    );
+}

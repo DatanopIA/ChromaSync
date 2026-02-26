@@ -4,7 +4,9 @@
  */
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { HelmetProvider } from "react-helmet-async";
 import Layout from "./components/Layout";
+import Landing from "./pages/Landing";
 import Dashboard from "./pages/Dashboard";
 import Generator from "./pages/Generator";
 import Projects from "./pages/Projects";
@@ -24,28 +26,31 @@ import { AuraProvider } from "./context/AuraContext";
 
 export default function App() {
   return (
-    <AuraProvider>
-      <Router>
-        <Layout>
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/generator" element={<Generator />} />
-            <Route path="/projects" element={<Projects />} />
-            <Route path="/brandkit" element={<BrandKit />} />
-            <Route path="/projects/:id" element={<BrandKit />} />
-            <Route path="/community" element={<Community />} />
-            <Route path="/community/:id" element={<PalettePreview />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/help" element={<Help />} />
-            <Route path="/pricing" element={<Pricing />} />
-            <Route path="/success" element={<Success />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/privacy" element={<Privacy />} />
-            <Route path="/terms" element={<Terms />} />
-            <Route path="/cookies" element={<Cookies />} />
-          </Routes>
-        </Layout>
-      </Router>
-    </AuraProvider>
+    <HelmetProvider>
+      <AuraProvider>
+        <Router>
+          <Layout>
+            <Routes>
+              <Route path="/" element={<Landing />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/generator" element={<Generator />} />
+              <Route path="/projects" element={<Projects />} />
+              <Route path="/brandkit" element={<BrandKit />} />
+              <Route path="/projects/:id" element={<BrandKit />} />
+              <Route path="/community" element={<Community />} />
+              <Route path="/community/:id" element={<PalettePreview />} />
+              <Route path="/settings" element={<Settings />} />
+              <Route path="/help" element={<Help />} />
+              <Route path="/pricing" element={<Pricing />} />
+              <Route path="/success" element={<Success />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/privacy" element={<Privacy />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/cookies" element={<Cookies />} />
+            </Routes>
+          </Layout>
+        </Router>
+      </AuraProvider>
+    </HelmetProvider>
   );
 }

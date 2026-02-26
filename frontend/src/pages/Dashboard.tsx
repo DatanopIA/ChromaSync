@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { MagneticText } from "@/components/ui/morphing-cursor";
 import { AuroraBackground } from "@/components/ui/aurora-background";
+import SEO from "@/components/SEO";
 
 const categories = [
   {
@@ -57,6 +58,10 @@ export default function Dashboard() {
       transition={{ duration: 0.8 }}
       className="w-full max-w-[1400px] mx-auto px-4 md:px-6 py-12 md:py-20 flex flex-col gap-16 md:gap-24"
     >
+      <SEO
+        title="Panel de Control | ChromaSync Aura IA"
+        description="Explora paletas de colores en tendencia y crea diseños impactantes con la ayuda de nuestra IA avanzada."
+      />
       {/* Hero Section */}
       <section className="flex flex-col gap-8 relative">
         {/* Mobile Aurora Background - Specifically for Hero Section */}

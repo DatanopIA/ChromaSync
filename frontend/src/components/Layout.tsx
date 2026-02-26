@@ -10,7 +10,7 @@ import Logo from "./Logo";
 import { AuroraBackground } from "./ui/aurora-background";
 
 const navItems = [
-  { name: "Panel", path: "/" },
+  { name: "Panel", path: "/dashboard" },
   { name: "Generador", path: "/generator" },
   { name: "Proyectos", path: "/projects" },
   { name: "Comunidad", path: "/community" },

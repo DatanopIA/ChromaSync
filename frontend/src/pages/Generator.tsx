@@ -4,6 +4,7 @@ import { AnimatePresence, motion, Reorder } from "framer-motion";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useAura } from "../context/AuraContext";
+import SEO from "@/components/SEO";
 
 const initialColors = [
   { id: "1", hex: "#FFFFFF", locked: false },
@@ -252,6 +253,10 @@ export default function Generator() {
       animate={{ opacity: 1 }}
       className="flex flex-col h-[calc(100vh-80px)] w-full bg-muted transition-colors duration-300"
     >
+      <SEO
+        title="Generador de Colores IA | ChromaSync Aura"
+        description="Genera paletas de colores únicas usando inteligencia artificial. Escribe una sensación o sube una imagen para empezar."
+      />
       {/* Top Toolbar */}
       <div className="h-auto md:h-16 bg-background border-b border-border flex flex-col md:flex-row items-center justify-between px-4 md:px-6 py-4 md:py-0 shrink-0 relative z-50 gap-4 md:gap-0">
         <div className="flex items-center gap-2 md:gap-4 w-full md:w-auto overflow-x-auto no-scrollbar pb-1 md:pb-0">
