@@ -38,7 +38,7 @@ export default function Pricing() {
             ],
             description: "Para diseñadores freelance y creadores de contenido.",
             buttonText: "Mejorar a Plus",
-            onClick: () => handleSubscribe("price_1T4IVtPFZw0GeHfahmdGvBS6"),
+            onClick: () => handleSubscribe("price_1T50yrPFY6V15uy4Y76Dqgvi"),
             isPopular: true,
         },
         {
@@ -55,7 +55,7 @@ export default function Pricing() {
             ],
             description: "Para agencias y estudios de diseño profesional.",
             buttonText: "Obtener Pro",
-            onClick: () => handleSubscribe("price_1T4IVtPFZw0GeHfa9ZcnJ9vr"),
+            onClick: () => handleSubscribe("price_1T510LPFY6V15uy4ox29pLz9"),
         }
     ];
 

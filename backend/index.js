@@ -58,8 +58,8 @@ app.post('/stripe-webhook', express.raw({ type: 'application/json' }), async (re
             const priceId = subscription.items.data[0].price.id;
 
             let plan = 'FREE';
-            if (priceId === process.env.STRIPE_PRICE_PLUS) plan = 'PLUS';
-            if (priceId === process.env.STRIPE_PRICE_PRO) plan = 'PRO';
+            if (priceId === 'price_1T50yrPFY6V15uy4Y76Dqgvi') plan = 'PLUS';
+            if (priceId === 'price_1T510LPFY6V15uy4ox29pLz9') plan = 'PRO';
 
             console.log(`💰 Pago completado: ${customerEmail} -> ${plan}`);
 
