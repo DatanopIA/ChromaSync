@@ -75,13 +75,13 @@ export default function Dashboard() {
           <div className="hidden md:flex items-center gap-8">
             <MagneticText
               text="COLOR"
-              hoverText="CREATE"
+              hoverText="CREAR"
               className="md:text-[8vw] font-black tracking-tighter uppercase leading-[0.8]"
               circleSize={200}
             />
             <MagneticText
-              text="STUDIO"
-              hoverText="DESIGN"
+              text="ESTUDIO"
+              hoverText="DISEÑO"
               className="md:text-[8vw] font-black tracking-tighter uppercase leading-[0.8]"
               circleSize={200}
             />
