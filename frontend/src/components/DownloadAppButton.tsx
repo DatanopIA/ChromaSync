@@ -35,13 +35,20 @@ export default function DownloadAppButton({ variant = "primary", className = "" 
         }
     };
 
-    const simulateDownload = (platform: string) => {
+    const handleDirectDownload = (platform: string) => {
         setIsDownloading(platform);
+        const fileName = platform === "macOS" ? "ChromaSync_Aura_macOS.zip" : "ChromaSync_Aura_Windows.zip";
+        const link = document.createElement("a");
+        link.href = `/downloads/${fileName}`;
+        link.download = fileName;
+
         setTimeout(() => {
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
             setIsDownloading(null);
             setIsOpen(false);
-            alert(`Iniciando descarga de ChromaSync Aura para ${platform}. (Versión Beta Pro)`);
-        }, 2000);
+        }, 1500);
     };
 
     const buttonStyles = {
@@ -86,11 +93,11 @@ export default function DownloadAppButton({ variant = "primary", className = "" 
                                 <div className="flex justify-between items-start">
                                     <div className="flex flex-col gap-2">
                                         <div className="flex items-center gap-2 text-cyan-400 font-bold uppercase tracking-[0.2em] text-[10px]">
-                                            <Zap size={14} fill="currentColor" /> Multiplataforma
+                                            <Zap size={14} fill="currentColor" /> Acceso Directo (Beta)
                                         </div>
                                         <h2 className="text-3xl font-black tracking-tight">Obtén la experiencia Aura</h2>
                                         <p className="text-muted-foreground text-sm max-w-sm">
-                                            Sincroniza tus paletas en tiempo real y accede a herramientas de exportación nativas exclusivas.
+                                            Instala la versión nativa o web de forma instantánea sin pasar por tiendas.
                                         </p>
                                     </div>
                                     <button
@@ -103,90 +110,72 @@ export default function DownloadAppButton({ variant = "primary", className = "" 
                                     </button>
                                 </div>
 
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                                     {/* Desktop Platforms */}
-                                    <div className="flex flex-col gap-3">
-                                        <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground px-2">Desktop</span>
+                                    <div className="flex flex-col gap-4">
+                                        <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground px-2">Desktop (Descarga Directa)</span>
                                         <button
-                                            onClick={() => simulateDownload("macOS")}
-                                            className="flex items-center gap-4 p-5 rounded-3xl bg-muted/50 border border-transparent hover:border-foreground/20 hover:bg-muted transition-all text-left relative overflow-hidden group"
+                                            onClick={() => handleDirectDownload("macOS")}
+                                            className="flex items-center gap-4 p-5 rounded-3xl bg-muted/50 border border-transparent hover:border-cyan-400/30 hover:bg-muted transition-all text-left relative overflow-hidden group shadow-sm"
                                         >
-                                            <div className="w-10 h-10 rounded-xl bg-background flex items-center justify-center shadow-sm">
-                                                {isDownloading === "macOS" ? <RefreshCw className="animate-spin" size={20} /> : <Apple size={22} />}
+                                            <div className="w-12 h-12 rounded-xl bg-background flex items-center justify-center shadow-md">
+                                                {isDownloading === "macOS" ? <RefreshCw className="animate-spin text-cyan-400" size={24} /> : <Apple size={24} />}
                                             </div>
                                             <div className="flex flex-col">
                                                 <span className="font-bold text-sm">macOS</span>
-                                                <span className="text-[10px] text-muted-foreground">Apple Silicon & Intel</span>
+                                                <span className="text-[10px] text-muted-foreground">Universal Installer</span>
                                             </div>
                                         </button>
                                         <button
-                                            onClick={() => simulateDownload("Windows")}
-                                            className="flex items-center gap-4 p-5 rounded-3xl bg-muted/50 border border-transparent hover:border-foreground/20 hover:bg-muted transition-all text-left relative overflow-hidden group"
+                                            onClick={() => handleDirectDownload("Windows")}
+                                            className="flex items-center gap-4 p-5 rounded-3xl bg-muted/50 border border-transparent hover:border-cyan-400/30 hover:bg-muted transition-all text-left relative overflow-hidden group shadow-sm"
                                         >
-                                            <div className="w-10 h-10 rounded-xl bg-background flex items-center justify-center shadow-sm">
-                                                {isDownloading === "Windows" ? <RefreshCw className="animate-spin" size={20} /> : <Monitor size={22} />}
+                                            <div className="w-12 h-12 rounded-xl bg-background flex items-center justify-center shadow-md">
+                                                {isDownloading === "Windows" ? <RefreshCw className="animate-spin text-cyan-400" size={24} /> : <Monitor size={24} />}
                                             </div>
                                             <div className="flex flex-col">
                                                 <span className="font-bold text-sm">Windows</span>
-                                                <span className="text-[10px] text-muted-foreground">x64 Installer</span>
+                                                <span className="text-[10px] text-muted-foreground">EXE Installer</span>
                                             </div>
                                         </button>
                                     </div>
 
-                                    {/* Mobile Platforms */}
-                                    <div className="flex flex-col gap-3">
-                                        <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground px-2">Mobile</span>
-                                        <div className="grid grid-cols-2 gap-3">
-                                            <button
-                                                onClick={() => simulateDownload("App Store")}
-                                                className="flex flex-col items-center gap-2 p-4 rounded-3xl bg-muted/50 border border-transparent hover:border-foreground/20 hover:bg-muted transition-all text-center"
-                                            >
-                                                <div className="w-10 h-10 rounded-xl bg-background flex items-center justify-center shadow-sm">
-                                                    <Apple size={20} />
-                                                </div>
-                                                <span className="font-bold text-[10px]">App Store</span>
-                                            </button>
-                                            <button
-                                                onClick={() => simulateDownload("Play Store")}
-                                                className="flex flex-col items-center gap-2 p-4 rounded-3xl bg-muted/50 border border-transparent hover:border-foreground/20 hover:bg-muted transition-all text-center"
-                                            >
-                                                <div className="w-10 h-10 rounded-xl bg-background flex items-center justify-center shadow-sm">
-                                                    <Smartphone size={20} className="text-green-500" />
-                                                </div>
-                                                <span className="font-bold text-[10px]">Play Store</span>
-                                            </button>
-                                        </div>
-
+                                    {/* Mobile/PWA Platforms */}
+                                    <div className="flex flex-col gap-4">
+                                        <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground px-2">Móvil (Instalación Instantánea)</span>
                                         <button
                                             onClick={handleInstallPWA}
                                             aria-label="Instalar como aplicación web"
                                             title="Instalar PWA"
-                                            className="mt-1 flex flex-col justify-between p-6 rounded-3xl bg-foreground text-background hover:scale-[1.02] transition-all text-left relative overflow-hidden ring-offset-background focus:ring-2 ring-foreground min-h-[140px]"
+                                            className="grow flex flex-col justify-between p-8 rounded-[2rem] bg-foreground text-background hover:scale-[1.02] transition-all text-left relative overflow-hidden shadow-xl ring-offset-background focus:ring-2 ring-foreground"
                                         >
                                             <div className="flex justify-between items-start">
-                                                <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center">
-                                                    <Zap size={20} />
+                                                <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center">
+                                                    <Smartphone size={28} />
                                                 </div>
-                                                <div className="bg-cyan-400 text-black text-[7px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter">Web App</div>
+                                                <div className="bg-cyan-400 text-black text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter">Sin Tiendas</div>
                                             </div>
-                                            <div className="flex flex-col gap-0.5 mt-2">
-                                                <span className="font-bold text-base leading-none">Instalar PWA</span>
-                                                <span className="text-[9px] opacity-60">Ideal para Chrome y Safari</span>
+                                            <div className="flex flex-col gap-1 mt-4">
+                                                <span className="font-black text-xl leading-none italic uppercase">INSTALAR AHORA</span>
+                                                <span className="text-[10px] opacity-70 leading-tight">Funciona en iPhone y Android sin descargas externas.</span>
                                             </div>
-                                            <div className="absolute -bottom-4 -right-4 w-16 h-16 bg-white/10 blur-2xl rounded-full" />
+                                            <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-cyan-400/30 blur-3xl rounded-full" />
                                         </button>
                                     </div>
                                 </div>
 
-                                <div className="pt-4 border-t border-border flex items-center gap-4 text-muted-foreground">
-                                    <div className="flex -space-x-2">
-                                        {[1, 2, 3].map(i => (
-                                            <div key={i} className="w-6 h-6 rounded-full border-2 border-background bg-muted overflow-hidden">
-                                                <img src={`https://i.pravatar.cc/100?u=user${i}`} alt="user" className="w-full h-full object-cover" />
-                                            </div>
-                                        ))}
+                                <div className="pt-6 border-t border-border flex items-center justify-between gap-4">
+                                    <div className="flex items-center gap-3 text-muted-foreground">
+                                        <div className="flex -space-x-2">
+                                            {[1, 2, 3].map(i => (
+                                                <div key={i} className="w-6 h-6 rounded-full border-2 border-background bg-muted overflow-hidden">
+                                                    <img src={`https://i.pravatar.cc/100?u=user${i}`} alt="user" className="w-full h-full object-cover" />
+                                                </div>
+                                            ))}
+                                        </div>
+                                        <span className="text-[10px] font-medium leading-none">Más de 15k creativos<br />ya usan Aura Nativo.</span>
                                     </div>
-                                    <span className="text-[10px] font-medium">+15k creativos ya usan la app nativa</span>
+                                    <div className="text-[9px] text-muted-foreground bg-muted px-3 py-1.5 rounded-full font-mono">v1.2.0-beta</div>
                                 </div>
                             </div>
                         </motion.div>

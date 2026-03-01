@@ -360,12 +360,10 @@ export default function Settings() {
                     <div>
                       <h3 className="text-xl font-bold">Aura Mobile</h3>
                       <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
-                        Captura colores del mundo real con tu cámara y sincroniza instantáneamente con tu estudio.
+                        Instala Aura en tu dispositivo móvil instantáneamente como una Web App de alto rendimiento. Sin esperas.
                       </p>
                     </div>
-                    <button className="w-full py-4 rounded-full bg-background border border-border font-bold text-sm hover:bg-muted transition-all flex items-center justify-center gap-2">
-                      Próximamente
-                    </button>
+                    <DownloadAppButton variant="secondary" className="w-full justify-center py-4" />
                   </div>
                 </div>
 
