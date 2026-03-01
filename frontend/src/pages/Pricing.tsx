@@ -4,8 +4,17 @@ import { PricingSection, PricingPlan } from "../components/ui/pricing";
 export default function Pricing() {
     const { createCheckoutSession, user, signInWithGoogle } = useAura();
 
-    const handleSubscribe = (priceId: string | null) => {
-        if (!priceId) return;
+    const handleSubscribe = (priceId: string | null | undefined) => {
+        console.log("handleSubscribe llamado con ID:", priceId);
+
+        if (!priceId) {
+            // Si es null o undefined, redirigimos al panel (plan Free o error de env var)
+            console.log("Redirigiendo al panel por falta de ID");
+            window.location.href = "/panel";
+            return;
+        }
+
+        console.log("Llamando a createCheckoutSession...");
         createCheckoutSession(priceId);
     };
 
@@ -38,7 +47,7 @@ export default function Pricing() {
             ],
             description: "Para diseñadores freelance y creadores de contenido.",
             buttonText: "Mejorar a Plus",
-            onClick: () => handleSubscribe(import.meta.env.VITE_STRIPE_PRICE_PLUS),
+            onClick: () => handleSubscribe(import.meta.env.VITE_STRIPE_PRICE_PLUS || "price_1T4IVtPFZw0GeHfahmdGvBS6"),
             isPopular: true,
         },
         {
@@ -55,7 +64,7 @@ export default function Pricing() {
             ],
             description: "Para agencias y estudios de diseño profesional.",
             buttonText: "Obtener Pro",
-            onClick: () => handleSubscribe(import.meta.env.VITE_STRIPE_PRICE_PRO),
+            onClick: () => handleSubscribe(import.meta.env.VITE_STRIPE_PRICE_PRO || "price_1T4IVtPFZw0GeHfa9ZcnJ9vr"),
         }
     ];
 

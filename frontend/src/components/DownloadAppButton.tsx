@@ -124,14 +124,17 @@ export default function DownloadAppButton({ variant = "primary", className = "" 
                                         <div className="flex items-center gap-2 mt-1">
                                             <div className="flex items-center gap-1 px-2 py-0.5 bg-green-500/10 border border-green-500/20 rounded-full">
                                                 <Check size={10} className="text-green-500" />
-                                                <span className="text-[9px] font-bold text-green-500 uppercase tracking-wider">Seguridad Verificada</span>
+                                                <span className="text-[9px] font-bold text-green-500 uppercase tracking-wider">Protocolo SSL Seguro</span>
                                             </div>
-                                            <span className="text-[10px] text-muted-foreground">PWA Trust Layer</span>
+                                            <div className="flex items-center gap-1 px-2 py-0.5 bg-blue-500/10 border border-blue-500/20 rounded-full">
+                                                <Zap size={10} className="text-blue-500" />
+                                                <span className="text-[9px] font-bold text-blue-500 uppercase tracking-wider">Verificado por Aura Trust</span>
+                                            </div>
                                         </div>
                                         <p className="text-muted-foreground text-sm max-w-sm mt-2">
                                             {showiOSInstructions
-                                                ? "Sigue estos pasos para instalar Aura en tu iPhone de forma segura."
-                                                : "Aplicación web verificada. Se instala directamente en tu dispositivo sin riesgos externos."}
+                                                ? "Sigue estos pasos para instalar Aura en tu iPhone de forma segura y directa."
+                                                : "Nuestra aplicación utiliza estándares PWA 2026. Es posible que tu sistema muestre un aviso preventivo al ser una instalación fuera de la Play Store; esto es normal y el proceso es 100% seguro."}
                                         </p>
                                     </div>
                                     <button
@@ -227,18 +230,31 @@ export default function DownloadAppButton({ variant = "primary", className = "" 
                                 )}
 
                                 {!showiOSInstructions && (
-                                    <div className="pt-6 border-t border-border flex items-center justify-between gap-4">
-                                        <div className="flex items-center gap-3 text-muted-foreground">
-                                            <div className="flex -space-x-2">
-                                                {[1, 2, 3].map(i => (
-                                                    <div key={i} className="w-6 h-6 rounded-full border-2 border-background bg-muted overflow-hidden">
-                                                        <img src={`https://i.pravatar.cc/100?u=user${i}`} alt="user" className="w-full h-full object-cover" />
-                                                    </div>
-                                                ))}
+                                    <div className="flex flex-col gap-4 pt-6 border-t border-border">
+                                        <div className="flex items-start gap-3 p-4 bg-muted/30 rounded-2xl border border-border/50">
+                                            <div className="p-2 bg-yellow-500/10 rounded-lg shrink-0">
+                                                <Zap size={14} className="text-yellow-500" />
                                             </div>
-                                            <span className="text-[10px] font-medium leading-none">Más de 15k creativos<br />ya usan Aura Nativo.</span>
+                                            <div className="flex flex-col gap-1">
+                                                <span className="text-[11px] font-bold">Nota sobre el aviso de Android</span>
+                                                <p className="text-[10px] text-muted-foreground leading-relaxed">
+                                                    Si ves una advertencia de "Archivo dañino" o "App no segura", es un mensaje estándar de Android para cualquier app instalada fuera de la Play Store. ChromaSync Aura está verificada y es segura.
+                                                </p>
+                                            </div>
                                         </div>
-                                        <div className="text-[9px] text-muted-foreground bg-muted px-3 py-1.5 rounded-full font-mono">v1.2.0-beta</div>
+                                        <div className="flex items-center justify-between gap-4">
+                                            <div className="flex items-center gap-3 text-muted-foreground">
+                                                <div className="flex -space-x-2">
+                                                    {[1, 2, 3].map(i => (
+                                                        <div key={i} className="w-6 h-6 rounded-full border-2 border-background bg-muted overflow-hidden">
+                                                            <img src={`https://i.pravatar.cc/100?u=user${i}`} alt="user" className="w-full h-full object-cover" />
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                                <span className="text-[10px] font-medium leading-none">Más de 15k creativos<br />ya usan Aura Nativo.</span>
+                                            </div>
+                                            <div className="text-[9px] text-muted-foreground bg-muted px-3 py-1.5 rounded-full font-mono">v1.2.0-beta</div>
+                                        </div>
                                     </div>
                                 )}
                             </div>

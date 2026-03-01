@@ -1,9 +1,9 @@
 {
-    "id": "com.chromasync.aura.v2",
+    "id": "com.datanopia.chromasync",
     "name": "ChromaSync Aura",
     "short_name": "Aura",
     "description": "Plataforma de IA generativa para diseño cromático profesional y psicología del color en 2026.",
-    "start_url": "/",
+    "start_url": "/dashboard",
     "scope": "/",
     "display": "standalone",
     "display_override": [
@@ -79,5 +79,11 @@
     ],
     "lang": "es-ES",
     "orientation": "portrait",
-    "prefer_related_applications": false
+    "prefer_related_applications": false,
+    "related_applications": [
+        {
+            "platform": "play",
+            "id": "com.datanopia.chromasync"
+        }
+    ]
 }

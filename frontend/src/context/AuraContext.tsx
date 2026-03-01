@@ -5,10 +5,14 @@ import { request, gql } from "graphql-request";
 const SUPABASE_URL = (import.meta as any).env.VITE_SUPABASE_URL || "https://olmvkmyyqfpdhxfaozsp.supabase.co";
 const SUPABASE_ANON_KEY = (import.meta as any).env.VITE_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9sbXZrbXl5cWZwZGh4ZmFvenNwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5MjUzNzgsImV4cCI6MjA4NzUwMTM3OH0.Y-er__uYzvP50bqprPZLWjl-yAdvJ2mVNpFy560eBUY";
 
-// Lógica inteligente: Si estamos en local (nuestro PC), usa localhost. Si no, usa Railway.
-const isLocal = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+// Lógica de conexión: Si estamos en local (nuestro PC), usamos localhost. Si no, Railway.
+const isLocal = typeof window !== 'undefined' && (
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1'
+);
+
 const GRAPHQL_ENDPOINT = isLocal
-  ? "http://localhost:4000/graphql"
+  ? `http://${window.location.hostname}:4000/graphql`
   : "https://chromasync-production.up.railway.app/graphql";
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -251,6 +255,9 @@ export function AuraProvider({ children }: { children: ReactNode }) {
   };
 
   const createCheckoutSession = async (priceId: string) => {
+    console.log(`[Stripe] Iniciando sesión para PriceID: ${priceId}`);
+    console.log(`[Stripe] Usando Endpoint: ${GRAPHQL_ENDPOINT}`);
+
     try {
       const mutation = gql`
         mutation CreateCheckoutSession($priceId: String!) {
@@ -259,18 +266,25 @@ export function AuraProvider({ children }: { children: ReactNode }) {
       `;
       const headers = await getHeaders();
       const data: any = await request(GRAPHQL_ENDPOINT, mutation, { priceId }, headers);
+
+      console.log("[Stripe] Respuesta del servidor:", data);
+
       if (data.createCheckoutSession) {
+        console.log(`[Stripe] Redirigiendo a: ${data.createCheckoutSession}`);
         window.location.href = data.createCheckoutSession;
+      } else {
+        console.error("[Stripe] La respuesta no contiene una URL válida");
+        alert("Error: El servidor no devolvió una URL de pago. Mira la consola.");
       }
     } catch (error: any) {
       console.error("Checkout session error:", error);
 
-      const errorMsg = error.message || "";
+      const errorMsg = error.response?.errors?.[0]?.message || error.message || "";
       if (errorMsg.includes("autenticado") || errorMsg.includes("autorizado")) {
+        alert("Debes iniciar sesión para suscribirte.");
         signInWithGoogle();
       } else {
-        // Mostramos el error específico para diagnosticar mejor (ej. "Failed to fetch", "CORS", etc.)
-        alert(`Error al iniciar el pago: ${errorMsg.substring(0, 100)}\n\nVerifica que el Backend esté desplegado y configurado correctamente.`);
+        alert(`Error: ${errorMsg.substring(0, 100)}\n\nFallo de red o servidor.`);
       }
     }
   };

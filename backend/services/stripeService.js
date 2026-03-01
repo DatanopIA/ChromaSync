@@ -49,6 +49,7 @@ async function createCheckoutSession(customerEmail, priceId) {
     try {
         const sessionData = {
             payment_method_types: ['card'],
+            allow_promotion_codes: true, // Habilitar cupones y códigos promocionales
             line_items: [
                 {
                     price: priceId,

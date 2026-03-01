@@ -1,7 +1,7 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, useEffect } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, Sparkles, Zap, Shield, Globe, MousePointer2, Palette } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AuroraBackground } from "@/components/ui/aurora-background";
 import { MagneticText } from "@/components/ui/morphing-cursor";
 import SEO from "@/components/SEO";
@@ -9,6 +9,19 @@ import Logo from "@/components/Logo";
 import DownloadAppButton from "@/components/DownloadAppButton";
 
 export default function Landing() {
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        // Detectar si está en modo standalone (PWA instalada) o es una plataforma nativa (Capacitor)
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+        // @ts-ignore - Capacitor podría no estar tipado globalmente
+        const isCapacitor = !!window.Capacitor?.isNativePlatform?.();
+
+        if (isStandalone || isCapacitor) {
+            navigate('/dashboard', { replace: true });
+        }
+    }, [navigate]);
+
     return (
         <div className="relative min-h-screen w-full bg-background overflow-hidden">
             <SEO

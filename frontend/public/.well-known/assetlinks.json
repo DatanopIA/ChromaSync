@@ -1,0 +1,15 @@
+[
+    {
+        "relation": [
+            "delegate_permission/common.handle_all_urls",
+            "delegate_permission/common.get_login_creds"
+        ],
+        "target": {
+            "namespace": "android_app",
+            "package_name": "com.datanopia.chromasync",
+            "sha256_cert_fingerprints": [
+                "FA:25:AE:3B:2F:CA:F5:19:0E:D0:65:4F:0B:CC:35:56:1D:8A:F8:65:D5:27:95:FF:22:C9:E9:90:A3:5F:43:79"
+            ]
+        }
+    }
+]

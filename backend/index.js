@@ -456,6 +456,7 @@ const resolvers = {
             return collab;
         },
         createCheckoutSession: async (_, { priceId }, { user }) => {
+            console.log(`[Stripe] Petición de Checkout recibida para Price: ${priceId} (Usuario: ${user?.email || 'Guest'})`);
             const { createCheckoutSession } = require('./services/stripeService');
             // Si el usuario está autenticado, pasamos su email. Si no, Stripe lo pedirá.
             return await createCheckoutSession(user?.email || null, priceId);
