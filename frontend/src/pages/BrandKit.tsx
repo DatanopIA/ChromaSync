@@ -7,13 +7,16 @@ import { cn } from "@/lib/utils";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 
+const isLocal = window.location.hostname === 'localhost';
+const API_URL = isLocal ? "http://localhost:4000" : "https://chromasync-production.up.railway.app";
+
 const projects = [
-    { id: 1, name: "Cyberpunk Neon", colors: ["#FF003C", "#00E5FF", "#FCEE0A", "#1A1A1A", "#FFFFFF"], date: "2 days ago", isAI: true },
-    { id: 2, name: "Soft Minimal", colors: ["#F8F9FA", "#E9ECEF", "#DEE2E6", "#CED4DA", "#ADB5BD"], date: "1 week ago", isAI: false },
-    { id: 3, name: "Earthy Tones", colors: ["#8B5A2B", "#CD853F", "#DEB887", "#F5DEB3", "#FFF8DC"], date: "2 weeks ago", isAI: false },
-    { id: 4, name: "Ocean Breeze", colors: ["#00B4DB", "#0083B0", "#E0EAFC", "#CFDEF3", "#FFFFFF"], date: "1 month ago", isAI: true },
-    { id: 5, name: "Vintage Retro", colors: ["#F4A261", "#E76F51", "#2A9D8F", "#E9C46A", "#264653"], date: "2 months ago", isAI: false },
-    { id: 6, name: "Dark Mode UI", colors: ["#121212", "#1E1E1E", "#BB86FC", "#03DAC6", "#CF6679"], date: "3 months ago", isAI: true },
+    { id: 'mock-1', name: "Cyberpunk Neon", colors: ["#FF003C", "#00E5FF", "#FCEE0A", "#1A1A1A", "#FFFFFF"], date: "2 days ago", isAI: true },
+    { id: 'mock-2', name: "Soft Minimal", colors: ["#F8F9FA", "#E9ECEF", "#DEE2E6", "#CED4DA", "#ADB5BD"], date: "1 week ago", isAI: false },
+    { id: 'mock-3', name: "Earthy Tones", colors: ["#8B5A2B", "#CD853F", "#DEB887", "#F5DEB3", "#FFF8DC"], date: "2 weeks ago", isAI: false },
+    { id: 'mock-4', name: "Ocean Breeze", colors: ["#00B4DB", "#0083B0", "#E0EAFC", "#CFDEF3", "#FFFFFF"], date: "1 month ago", isAI: true },
+    { id: 'mock-5', name: "Vintage Retro", colors: ["#F4A261", "#E76F51", "#2A9D8F", "#E9C46A", "#264653"], date: "2 months ago", isAI: false },
+    { id: 'mock-6', name: "Dark Mode UI", colors: ["#121212", "#1E1E1E", "#BB86FC", "#03DAC6", "#CF6679"], date: "3 months ago", isAI: true },
 ];
 
 const googleFonts = [
@@ -30,11 +33,11 @@ export default function BrandKit() {
     const { id } = useParams();
     const location = useLocation();
     const navigate = useNavigate();
-    const initialProject = projects.find(p => p.id === Number(id)) || projects[0];
+    const initialProject = projects.find(p => p.id === id) || projects[0];
 
     // Check if we have a remix in state
     const isRemix = !!location.state?.colors;
-    const currentProject = isRemix ? { ...initialProject, colors: location.state.colors, name: location.state.name || "Remix Palette" } : initialProject;
+    const currentProject = isRemix ? { ...initialProject, id: 'remix', colors: location.state.colors, name: location.state.name || "Remix Palette" } : initialProject;
 
     const [paletteColors, setPaletteColors] = useState<string[]>(currentProject.colors);
 
@@ -240,14 +243,18 @@ export default function BrandKit() {
                     pdf.save(`${kitName.toLowerCase().replace(/\s+/g, '-')}-brand-guide.pdf`);
                     setSuccessMessage("¡Guía de marca PDF visual generada!");
                 }
-            } else if (type === 'canva') {
-                // Redirect to Canva Brand Kits
-                window.open('https://www.canva.com/brand-kits', '_blank');
-                setSuccessMessage("¡Redirigiendo a Canva!");
-            } else if (type === 'figma') {
-                // Redirect to Figma
-                window.open('https://www.figma.com', '_blank');
-                setSuccessMessage("¡Redirigiendo a Figma!");
+            } else if (['figma', 'ase', 'canva'].includes(type)) {
+                // Real backend export
+                if (!id || id.startsWith('mock')) {
+                    alert("Primero guarda tu Brand Kit para poder exportarlo en formatos profesionales.");
+                    setIsSaveModalOpen(true);
+                    setIsSaving(false);
+                    return;
+                }
+                
+                const exportUrl = `${API_URL}/export/${id}/${type}`;
+                window.open(exportUrl, '_blank');
+                setSuccessMessage(`¡Exportación a ${type.toUpperCase()} iniciada!`);
             } else {
                 setSuccessMessage(`¡Exportación a ${type.toUpperCase()} completada!`);
             }

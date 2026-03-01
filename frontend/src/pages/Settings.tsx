@@ -3,6 +3,7 @@ import { User as UserIcon, Bell, Shield, CreditCard, Monitor, LogOut, Check, X, 
 import { motion } from "framer-motion";
 import { useAura } from "../context/AuraContext";
 import { Link } from "react-router-dom";
+import DownloadAppButton from "../components/DownloadAppButton";
 
 export default function Settings() {
   const [activeTab, setActiveTab] = useState("profile");
@@ -80,6 +81,12 @@ export default function Settings() {
           >
             <Monitor size={18} /> Apariencia
           </button>
+          <button
+            onClick={() => setActiveTab("app")}
+            className={`flex items-center gap-3 px-4 py-3 text-sm font-medium transition-all text-left rounded-lg ${activeTab === "app" ? "bg-muted text-foreground" : "text-muted-foreground hover:text-foreground hover:bg-muted/50"}`}
+          >
+            <Smartphone size={18} /> App Nativa
+          </button>
 
           <div className="mt-8 pt-8 border-t border-border">
             {user ? (
@@ -124,7 +131,11 @@ export default function Settings() {
               <div className="flex items-center gap-8">
                 <div className="relative">
                   <img src={user.user_metadata.avatar_url || "https://picsum.photos/seed/avatar/150/150"} alt="Avatar" className="w-24 h-24 rounded-full object-cover shadow-sm" referrerPolicy="no-referrer" />
-                  <button className="absolute bottom-0 right-0 bg-white text-black p-2 rounded-full shadow-md border border-gray-100 hover:bg-gray-50 transition-colors">
+                  <button
+                    aria-label="Editar foto de perfil"
+                    title="Editar foto"
+                    className="absolute bottom-0 right-0 bg-white text-black p-2 rounded-full shadow-md border border-gray-100 hover:bg-gray-50 transition-colors"
+                  >
                     <Edit3 size={14} />
                   </button>
                 </div>
@@ -137,8 +148,9 @@ export default function Settings() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 pt-10 border-t border-border">
                 <div className="space-y-2">
-                  <label className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Nombre de usuario</label>
+                  <label htmlFor="username-input" className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Nombre de usuario</label>
                   <input
+                    id="username-input"
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
@@ -146,8 +158,9 @@ export default function Settings() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Email vinculado</label>
+                  <label htmlFor="email-input" className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Email vinculado</label>
                   <input
+                    id="email-input"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -284,6 +297,7 @@ export default function Settings() {
                     </div>
                     <button
                       onClick={() => setReduceAnimations(!reduceAnimations)}
+                      aria-label="Alternar reducción de animaciones"
                       className={`w-12 h-6 rounded-full relative p-1 transition-all border border-border ${reduceAnimations ? "bg-foreground" : "bg-muted"}`}
                     >
                       <motion.div
@@ -301,6 +315,7 @@ export default function Settings() {
                     </div>
                     <button
                       onClick={() => setShowAISuggestions(!showAISuggestions)}
+                      aria-label="Alternar sugerencias de IA"
                       className={`w-12 h-6 rounded-full relative p-1 transition-all border border-border ${showAISuggestions ? "bg-foreground" : "bg-muted"}`}
                     >
                       <motion.div
@@ -309,6 +324,60 @@ export default function Settings() {
                       />
                     </button>
                   </div>
+                </div>
+              </section>
+            </motion.div>
+          )}
+
+          {activeTab === "app" && (
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-12">
+              <section className="space-y-6">
+                <div className="flex flex-col gap-2">
+                  <h2 className="text-2xl font-bold tracking-tight text-foreground">Experiencia Nativa</h2>
+                  <p className="text-muted-foreground">Lleva ChromaSync Aura más allá del navegador con nuestras aplicaciones optimizadas.</p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6">
+                  <div className="p-8 bg-muted/30 border border-border rounded-[40px] flex flex-col gap-6 relative overflow-hidden group">
+                    <div className="absolute -top-12 -right-12 w-32 h-32 bg-cyan-400/10 blur-3xl rounded-full" />
+                    <div className="w-14 h-14 bg-background rounded-2xl flex items-center justify-center shadow-sm">
+                      <Monitor className="text-foreground" size={28} />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold">ChromaSync Desktop</h3>
+                      <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
+                        Mejor rendimiento, notificaciones del sistema y herramientas de exportación directa a software de diseño.
+                      </p>
+                    </div>
+                    <DownloadAppButton variant="primary" className="w-full justify-center py-4" />
+                  </div>
+
+                  <div className="p-8 bg-muted/30 border border-border rounded-[40px] flex flex-col gap-6 relative overflow-hidden group">
+                    <div className="absolute -top-12 -right-12 w-32 h-32 bg-purple-500/10 blur-3xl rounded-full" />
+                    <div className="w-14 h-14 bg-background rounded-2xl flex items-center justify-center shadow-sm">
+                      <Smartphone className="text-foreground" size={28} />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold">Aura Mobile</h3>
+                      <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
+                        Captura colores del mundo real con tu cámara y sincroniza instantáneamente con tu estudio.
+                      </p>
+                    </div>
+                    <button className="w-full py-4 rounded-full bg-background border border-border font-bold text-sm hover:bg-muted transition-all flex items-center justify-center gap-2">
+                      Próximamente
+                    </button>
+                  </div>
+                </div>
+
+                <div className="bg-foreground text-background p-8 rounded-[40px] flex flex-col md:flex-row items-center justify-between gap-6 overflow-hidden relative">
+                  <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/20 to-transparent pointer-events-none" />
+                  <div className="relative z-10 flex flex-col gap-1">
+                    <h4 className="font-bold text-lg">¿Eres desarrollador?</h4>
+                    <p className="text-xs opacity-60">Usa nuestra CLI nativa para integrar paletas directamente en tu VS Code.</p>
+                  </div>
+                  <button className="relative z-10 px-6 py-2.5 bg-background text-foreground rounded-full text-xs font-bold hover:scale-105 transition-all">
+                    Ver Documentación
+                  </button>
                 </div>
               </section>
             </motion.div>

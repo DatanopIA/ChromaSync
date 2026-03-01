@@ -1,7 +1,8 @@
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowRight, Sparkles, Image, Eye, Download, Briefcase, Globe } from "lucide-react";
+import { ArrowRight, Sparkles, Image, Eye, Download, Briefcase, Globe, Smartphone } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useAura } from "../context/AuraContext";
 import { MagneticText } from "@/components/ui/morphing-cursor";
 import { AuroraBackground } from "@/components/ui/aurora-background";
 import SEO from "@/components/SEO";
@@ -41,15 +42,40 @@ const categories = [
   }
 ];
 
-const recentPalettes = [
-  { id: 1, name: "Cyberpunk Neon", colors: ["#FF003C", "#00E5FF", "#FCEE0A", "#1A1A1A", "#FFFFFF"] },
-  { id: 2, name: "Soft Minimal", colors: ["#F8F9FA", "#E9ECEF", "#DEE2E6", "#CED4DA", "#ADB5BD"] },
-  { id: 3, name: "Earthy Tones", colors: ["#8B5A2B", "#CD853F", "#DEB887", "#F5DEB3", "#FFF8DC"] },
-];
-
 export default function Dashboard() {
   const navigate = useNavigate();
+  const { user, getMyPalettes } = useAura();
   const [activeCategory, setActiveCategory] = useState(categories[0]);
+  const [recentPalettes, setRecentPalettes] = useState<any[]>([]);
+  const [loadingRecent, setLoadingRecent] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      const loadRecent = async () => {
+        setLoadingRecent(true);
+        try {
+          const palettes = await getMyPalettes();
+          setRecentPalettes(palettes.slice(0, 3).map(p => ({
+            id: p.id,
+            name: p.name,
+            colors: p.colors.map((c: any) => c.hex)
+          })));
+        } catch (error) {
+          console.error("Error loading recent palettes:", error);
+        } finally {
+          setLoadingRecent(false);
+        }
+      };
+      loadRecent();
+    } else {
+      // Fallback to static if not logged in
+      setRecentPalettes([
+        { id: 1, name: "Cyberpunk Neon", colors: ["#FF003C", "#00E5FF", "#FCEE0A", "#1A1A1A", "#FFFFFF"] },
+        { id: 2, name: "Soft Minimal", colors: ["#F8F9FA", "#E9ECEF", "#DEE2E6", "#CED4DA", "#ADB5BD"] },
+        { id: 3, name: "Earthy Tones", colors: ["#8B5A2B", "#CD853F", "#DEB887", "#F5DEB3", "#FFF8DC"] },
+      ]);
+    }
+  }, [user, getMyPalettes]);
 
   return (
     <motion.div
@@ -256,6 +282,13 @@ export default function Dashboard() {
               icon: <Globe className="w-6 h-6" />,
               accent: "from-cyan-500/20 to-teal-500/20",
               link: "/community"
+            },
+            {
+              title: "App Nativa",
+              desc: "Lleva Aura a tu escritorio o móvil para un flujo de trabajo sin interrupciones.",
+              icon: <Smartphone className="w-6 h-6" />,
+              accent: "from-orange-500/20 to-yellow-500/20",
+              link: "/settings"
             }
           ].map((tool, index) => (
             <Link key={tool.title} to={tool.link}>
@@ -296,7 +329,9 @@ export default function Dashboard() {
       {/* Recent Projects */}
       <section className="flex flex-col gap-12">
         <div className="flex items-end justify-between border-b border-border pb-6">
-          <h2 className="text-3xl font-medium">Paletas Recientes</h2>
+          <h2 className="text-3xl font-medium">
+            {user ? "Tus Paletas Recientes" : "Paletas de la Comunidad"}
+          </h2>
           <Link to="/projects" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2">
             Ver Todas <ArrowRight size={16} />
           </Link>

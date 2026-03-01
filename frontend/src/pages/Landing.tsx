@@ -3,8 +3,10 @@ import { motion } from "framer-motion";
 import { ArrowRight, Sparkles, Zap, Shield, Globe, MousePointer2, Palette } from "lucide-react";
 import { Link } from "react-router-dom";
 import { AuroraBackground } from "@/components/ui/aurora-background";
+import { MagneticText } from "@/components/ui/morphing-cursor";
 import SEO from "@/components/SEO";
 import Logo from "@/components/Logo";
+import DownloadAppButton from "@/components/DownloadAppButton";
 
 export default function Landing() {
     return (
@@ -39,7 +41,22 @@ export default function Landing() {
                         transition={{ duration: 0.8, delay: 0.2 }}
                         className="flex flex-col gap-4"
                     >
-                        <h1 className="text-4xl sm:text-5xl md:text-8xl font-black tracking-tighter leading-[0.9] bg-clip-text text-transparent bg-gradient-to-b from-foreground to-foreground/50">
+                        <div className="hidden md:flex flex-col items-center">
+                            <MagneticText
+                                text="EL COLOR DE TU AURA,"
+                                hoverText="TU VISIÓN DIGITAL,"
+                                className="text-4xl sm:text-5xl md:text-8xl font-black tracking-tighter leading-[0.9]"
+                                circleSize={300}
+                            />
+                            <MagneticText
+                                text="SINCRONIZADO POR IA"
+                                hoverText="POR CHROMASYNC AURA"
+                                className="text-4xl sm:text-5xl md:text-8xl font-black tracking-tighter leading-[0.9] text-cyan-400"
+                                circleSize={300}
+                                variant="inverted"
+                            />
+                        </div>
+                        <h1 className="md:hidden text-4xl sm:text-5xl font-black tracking-tighter leading-tight bg-clip-text text-transparent bg-gradient-to-b from-foreground to-foreground/50">
                             EL COLOR DE TU AURA,<br />
                             <span className="text-cyan-400">SINCRONIZADO POR IA</span>
                         </h1>
@@ -65,10 +82,11 @@ export default function Landing() {
                         </Link>
                         <Link
                             to="/community"
-                            className="px-10 py-5 bg-background border border-border rounded-full font-bold text-lg hover:bg-muted transition-colors"
+                            className="px-10 py-5 bg-background border border-border rounded-full font-bold text-lg hover:bg-muted transition-colors text-center"
                         >
                             Explorar Comunidad
                         </Link>
+                        <DownloadAppButton variant="secondary" className="px-10 py-5 text-lg" />
                     </motion.div>
 
                     <motion.div
@@ -233,6 +251,7 @@ export default function Landing() {
                         >
                             Ver Planes Pro
                         </Link>
+                        <DownloadAppButton variant="secondary" className="px-12 py-6 text-xl bg-transparent border-white/20 text-white hover:bg-white/10" />
                     </div>
                     <p className="text-background/40 text-sm font-medium">No se requiere tarjeta de crédito para empezar.</p>
                 </div>

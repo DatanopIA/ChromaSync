@@ -8,6 +8,7 @@ import NotificationBell from "./NotificationBell";
 import Footer from "./Footer";
 import Logo from "./Logo";
 import { AuroraBackground } from "./ui/aurora-background";
+import DownloadAppButton from "./DownloadAppButton";
 
 const navItems = [
   { name: "Panel", path: "/dashboard" },
@@ -190,6 +191,7 @@ export default function Layout({ children }: { children: ReactNode }) {
                     <LogIn size={20} /> Acceder con Google
                   </button>
                 )}
+                <DownloadAppButton variant="primary" className="w-full justify-center py-4" />
                 <Link
                   to="/generator"
                   onClick={() => setIsMobileMenuOpen(false)}
@@ -209,6 +211,6 @@ export default function Layout({ children }: { children: ReactNode }) {
       </main>
 
       <Footer />
-    </div>
+    </div >
   );
 }
