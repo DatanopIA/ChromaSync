@@ -116,15 +116,22 @@ export default function DownloadAppButton({ variant = "primary", className = "" 
                                 <div className="flex justify-between items-start">
                                     <div className="flex flex-col gap-2">
                                         <div className="flex items-center gap-2 text-cyan-400 font-bold uppercase tracking-[0.2em] text-[10px]">
-                                            <Zap size={14} fill="currentColor" /> {showiOSInstructions ? "Instrucciones de Instalación" : "Acceso Directo (Beta)"}
+                                            <Zap size={14} fill="currentColor" /> {showiOSInstructions ? "Instrucciones de Instalación" : "Instalación Segura (PWA)"}
                                         </div>
                                         <h2 className="text-3xl font-black tracking-tight">
-                                            {showiOSInstructions ? "Añadir a Inicio" : "Obtén la experiencia Aura"}
+                                            {showiOSInstructions ? "Añadir a Inicio" : "Obtén la app oficial"}
                                         </h2>
-                                        <p className="text-muted-foreground text-sm max-w-sm">
+                                        <div className="flex items-center gap-2 mt-1">
+                                            <div className="flex items-center gap-1 px-2 py-0.5 bg-green-500/10 border border-green-500/20 rounded-full">
+                                                <Check size={10} className="text-green-500" />
+                                                <span className="text-[9px] font-bold text-green-500 uppercase tracking-wider">Seguridad Verificada</span>
+                                            </div>
+                                            <span className="text-[10px] text-muted-foreground">PWA Trust Layer</span>
+                                        </div>
+                                        <p className="text-muted-foreground text-sm max-w-sm mt-2">
                                             {showiOSInstructions
-                                                ? "Sigue estos pasos para instalar Aura en tu iPhone."
-                                                : "Instala la versión nativa o web de forma instantánea sin pasar por tiendas."}
+                                                ? "Sigue estos pasos para instalar Aura en tu iPhone de forma segura."
+                                                : "Aplicación web verificada. Se instala directamente en tu dispositivo sin riesgos externos."}
                                         </p>
                                     </div>
                                     <button
