@@ -11,8 +11,15 @@ export default function DownloadAppButton({ variant = "primary", className = "" 
     const [isOpen, setIsOpen] = useState(false);
     const [isDownloading, setIsDownloading] = useState<string | null>(null);
     const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+    const [showiOSInstructions, setShowiOSInstructions] = useState(false);
+    const [isPWAInstalled, setIsPWAInstalled] = useState(false);
 
     useEffect(() => {
+        // Check if already in standalone mode
+        if (window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone) {
+            setIsPWAInstalled(true);
+        }
+
         const handler = (e: any) => {
             e.preventDefault();
             setDeferredPrompt(e);
@@ -22,15 +29,28 @@ export default function DownloadAppButton({ variant = "primary", className = "" 
     }, []);
 
     const handleInstallPWA = async () => {
+        if (isPWAInstalled) {
+            alert("ChromaSync Aura ya está instalada en tu dispositivo.");
+            return;
+        }
+
+        const isiOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+
+        if (isiOS) {
+            setShowiOSInstructions(true);
+            return;
+        }
+
         if (!deferredPrompt) {
-            // Fallback for browsers that don't support beforeinstallprompt or if already installed
             alert("Para instalar ChromaSync Aura, usa la opción 'Instalar Aplicación' o 'Añadir a pantalla de inicio' de tu navegador.");
             return;
         }
+
         deferredPrompt.prompt();
         const { outcome } = await deferredPrompt.userChoice;
         if (outcome === "accepted") {
             setDeferredPrompt(null);
+            setIsPWAInstalled(true);
             setIsOpen(false);
         }
     };
@@ -76,7 +96,10 @@ export default function DownloadAppButton({ variant = "primary", className = "" 
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
-                            onClick={() => setIsOpen(false)}
+                            onClick={() => {
+                                setIsOpen(false);
+                                setShowiOSInstructions(false);
+                            }}
                             className="fixed inset-0 bg-black/60 backdrop-blur-xl z-[1000] cursor-crosshair"
                         />
                         <motion.div
@@ -93,15 +116,22 @@ export default function DownloadAppButton({ variant = "primary", className = "" 
                                 <div className="flex justify-between items-start">
                                     <div className="flex flex-col gap-2">
                                         <div className="flex items-center gap-2 text-cyan-400 font-bold uppercase tracking-[0.2em] text-[10px]">
-                                            <Zap size={14} fill="currentColor" /> Acceso Directo (Beta)
+                                            <Zap size={14} fill="currentColor" /> {showiOSInstructions ? "Instrucciones de Instalación" : "Acceso Directo (Beta)"}
                                         </div>
-                                        <h2 className="text-3xl font-black tracking-tight">Obtén la experiencia Aura</h2>
+                                        <h2 className="text-3xl font-black tracking-tight">
+                                            {showiOSInstructions ? "Añadir a Inicio" : "Obtén la experiencia Aura"}
+                                        </h2>
                                         <p className="text-muted-foreground text-sm max-w-sm">
-                                            Instala la versión nativa o web de forma instantánea sin pasar por tiendas.
+                                            {showiOSInstructions
+                                                ? "Sigue estos pasos para instalar Aura en tu iPhone."
+                                                : "Instala la versión nativa o web de forma instantánea sin pasar por tiendas."}
                                         </p>
                                     </div>
                                     <button
-                                        onClick={() => setIsOpen(false)}
+                                        onClick={() => {
+                                            if (showiOSInstructions) setShowiOSInstructions(false);
+                                            else setIsOpen(false);
+                                        }}
                                         aria-label="Cerrar modal"
                                         title="Cerrar"
                                         className="p-3 bg-muted rounded-full hover:bg-muted/80 transition-colors"
@@ -110,73 +140,100 @@ export default function DownloadAppButton({ variant = "primary", className = "" 
                                     </button>
                                 </div>
 
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-                                    {/* Desktop Platforms */}
-                                    <div className="flex flex-col gap-4">
-                                        <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground px-2">Desktop (Descarga Directa)</span>
-                                        <button
-                                            onClick={() => handleDirectDownload("macOS")}
-                                            className="flex items-center gap-4 p-5 rounded-3xl bg-muted/50 border border-transparent hover:border-cyan-400/30 hover:bg-muted transition-all text-left relative overflow-hidden group shadow-sm"
-                                        >
-                                            <div className="w-12 h-12 rounded-xl bg-background flex items-center justify-center shadow-md">
-                                                {isDownloading === "macOS" ? <RefreshCw className="animate-spin text-cyan-400" size={24} /> : <Apple size={24} />}
-                                            </div>
-                                            <div className="flex flex-col">
-                                                <span className="font-bold text-sm">macOS</span>
-                                                <span className="text-[10px] text-muted-foreground">Universal Installer</span>
-                                            </div>
-                                        </button>
-                                        <button
-                                            onClick={() => handleDirectDownload("Windows")}
-                                            className="flex items-center gap-4 p-5 rounded-3xl bg-muted/50 border border-transparent hover:border-cyan-400/30 hover:bg-muted transition-all text-left relative overflow-hidden group shadow-sm"
-                                        >
-                                            <div className="w-12 h-12 rounded-xl bg-background flex items-center justify-center shadow-md">
-                                                {isDownloading === "Windows" ? <RefreshCw className="animate-spin text-cyan-400" size={24} /> : <Monitor size={24} />}
-                                            </div>
-                                            <div className="flex flex-col">
-                                                <span className="font-bold text-sm">Windows</span>
-                                                <span className="text-[10px] text-muted-foreground">EXE Installer</span>
-                                            </div>
-                                        </button>
-                                    </div>
-
-                                    {/* Mobile/PWA Platforms */}
-                                    <div className="flex flex-col gap-4">
-                                        <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground px-2">Móvil (Instalación Instantánea)</span>
-                                        <button
-                                            onClick={handleInstallPWA}
-                                            aria-label="Instalar como aplicación web"
-                                            title="Instalar PWA"
-                                            className="grow flex flex-col justify-between p-8 rounded-[2rem] bg-foreground text-background hover:scale-[1.02] transition-all text-left relative overflow-hidden shadow-xl ring-offset-background focus:ring-2 ring-foreground"
-                                        >
-                                            <div className="flex justify-between items-start">
-                                                <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center">
-                                                    <Smartphone size={28} />
-                                                </div>
-                                                <div className="bg-cyan-400 text-black text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter">Sin Tiendas</div>
-                                            </div>
-                                            <div className="flex flex-col gap-1 mt-4">
-                                                <span className="font-black text-xl leading-none italic uppercase">INSTALAR AHORA</span>
-                                                <span className="text-[10px] opacity-70 leading-tight">Funciona en iPhone y Android sin descargas externas.</span>
-                                            </div>
-                                            <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-cyan-400/30 blur-3xl rounded-full" />
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <div className="pt-6 border-t border-border flex items-center justify-between gap-4">
-                                    <div className="flex items-center gap-3 text-muted-foreground">
-                                        <div className="flex -space-x-2">
-                                            {[1, 2, 3].map(i => (
-                                                <div key={i} className="w-6 h-6 rounded-full border-2 border-background bg-muted overflow-hidden">
-                                                    <img src={`https://i.pravatar.cc/100?u=user${i}`} alt="user" className="w-full h-full object-cover" />
-                                                </div>
-                                            ))}
+                                {showiOSInstructions ? (
+                                    <div className="flex flex-col gap-6 py-4">
+                                        <div className="flex items-start gap-4 p-5 bg-muted/50 rounded-3xl border border-border">
+                                            <div className="w-8 h-8 rounded-full bg-foreground text-background flex items-center justify-center font-bold text-xs shrink-0">1</div>
+                                            <p className="text-sm font-medium">Pulsa el botón <strong>'Compartir'</strong> en la barra inferior de Safari.</p>
                                         </div>
-                                        <span className="text-[10px] font-medium leading-none">Más de 15k creativos<br />ya usan Aura Nativo.</span>
+                                        <div className="flex items-start gap-4 p-5 bg-muted/50 rounded-3xl border border-border">
+                                            <div className="w-8 h-8 rounded-full bg-foreground text-background flex items-center justify-center font-bold text-xs shrink-0">2</div>
+                                            <p className="text-sm font-medium">Busca la opción <strong>'Añadir a pantalla de inicio'</strong> en la lista.</p>
+                                        </div>
+                                        <div className="flex items-start gap-4 p-5 bg-muted/50 rounded-3xl border border-border">
+                                            <div className="w-8 h-8 rounded-full bg-foreground text-background flex items-center justify-center font-bold text-xs shrink-0">3</div>
+                                            <p className="text-sm font-medium">Pulsa <strong>'Añadir'</strong> en la esquina superior derecha.</p>
+                                        </div>
+                                        <button
+                                            onClick={() => setShowiOSInstructions(false)}
+                                            className="mt-4 w-full py-4 rounded-full bg-foreground text-background font-bold text-sm hover:opacity-90 transition-all"
+                                        >
+                                            Entendido
+                                        </button>
                                     </div>
-                                    <div className="text-[9px] text-muted-foreground bg-muted px-3 py-1.5 rounded-full font-mono">v1.2.0-beta</div>
-                                </div>
+                                ) : (
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                                        {/* Desktop Platforms */}
+                                        <div className="flex flex-col gap-4">
+                                            <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground px-2">Desktop (Descarga Directa)</span>
+                                            <button
+                                                onClick={() => handleDirectDownload("macOS")}
+                                                className="flex items-center gap-4 p-5 rounded-3xl bg-muted/50 border border-transparent hover:border-cyan-400/30 hover:bg-muted transition-all text-left relative overflow-hidden group shadow-sm"
+                                            >
+                                                <div className="w-12 h-12 rounded-xl bg-background flex items-center justify-center shadow-md">
+                                                    {isDownloading === "macOS" ? <RefreshCw className="animate-spin text-cyan-400" size={24} /> : <Apple size={24} />}
+                                                </div>
+                                                <div className="flex flex-col">
+                                                    <span className="font-bold text-sm">macOS</span>
+                                                    <span className="text-[10px] text-muted-foreground">Universal Installer</span>
+                                                </div>
+                                            </button>
+                                            <button
+                                                onClick={() => handleDirectDownload("Windows")}
+                                                className="flex items-center gap-4 p-5 rounded-3xl bg-muted/50 border border-transparent hover:border-cyan-400/30 hover:bg-muted transition-all text-left relative overflow-hidden group shadow-sm"
+                                            >
+                                                <div className="w-12 h-12 rounded-xl bg-background flex items-center justify-center shadow-md">
+                                                    {isDownloading === "Windows" ? <RefreshCw className="animate-spin text-cyan-400" size={24} /> : <Monitor size={24} />}
+                                                </div>
+                                                <div className="flex flex-col">
+                                                    <span className="font-bold text-sm">Windows</span>
+                                                    <span className="text-[10px] text-muted-foreground">EXE Installer</span>
+                                                </div>
+                                            </button>
+                                        </div>
+
+                                        {/* Mobile/PWA Platforms */}
+                                        <div className="flex flex-col gap-4">
+                                            <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground px-2">Móvil (Instalación Instantánea)</span>
+                                            <button
+                                                onClick={handleInstallPWA}
+                                                aria-label="Instalar como aplicación web"
+                                                title="Instalar PWA"
+                                                className="grow flex flex-col justify-between p-8 rounded-[2rem] bg-foreground text-background hover:scale-[1.02] transition-all text-left relative overflow-hidden shadow-xl ring-offset-background focus:ring-2 ring-foreground"
+                                            >
+                                                <div className="flex justify-between items-start">
+                                                    <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center">
+                                                        <Smartphone size={28} />
+                                                    </div>
+                                                    <div className="bg-cyan-400 text-black text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter">Sin Tiendas</div>
+                                                </div>
+                                                <div className="flex flex-col gap-1 mt-4">
+                                                    <span className="font-black text-xl leading-none italic uppercase">
+                                                        {isPWAInstalled ? "INSTALADA" : "INSTALAR AHORA"}
+                                                    </span>
+                                                    <span className="text-[10px] opacity-70 leading-tight">Funciona en iPhone y Android sin descargas externas.</span>
+                                                </div>
+                                                <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-cyan-400/30 blur-3xl rounded-full" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {!showiOSInstructions && (
+                                    <div className="pt-6 border-t border-border flex items-center justify-between gap-4">
+                                        <div className="flex items-center gap-3 text-muted-foreground">
+                                            <div className="flex -space-x-2">
+                                                {[1, 2, 3].map(i => (
+                                                    <div key={i} className="w-6 h-6 rounded-full border-2 border-background bg-muted overflow-hidden">
+                                                        <img src={`https://i.pravatar.cc/100?u=user${i}`} alt="user" className="w-full h-full object-cover" />
+                                                    </div>
+                                                ))}
+                                            </div>
+                                            <span className="text-[10px] font-medium leading-none">Más de 15k creativos<br />ya usan Aura Nativo.</span>
+                                        </div>
+                                        <div className="text-[9px] text-muted-foreground bg-muted px-3 py-1.5 rounded-full font-mono">v1.2.0-beta</div>
+                                    </div>
+                                )}
                             </div>
                         </motion.div>
                     </>
