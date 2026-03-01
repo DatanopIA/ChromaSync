@@ -1,10 +1,5 @@
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-
-/**
- * Crea los productos y precios base para Aura en Stripe.
- * Este script se debe ejecutar una sola vez para configurar el entorno.
- */
 async function setupStripeProducts() {
+    const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
     try {
         // 1. Crear Plan PLUS
         const plusProduct = await stripe.products.create({
@@ -46,6 +41,9 @@ async function setupStripeProducts() {
 }
 
 async function createCheckoutSession(customerEmail, priceId) {
+    const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+    console.log(`[Backend-Stripe] Iniciando sesión para: ${priceId} con Key: ${process.env.STRIPE_SECRET_KEY?.substring(0, 8)}...`);
+
     try {
         const sessionData = {
             payment_method_types: ['card'],
@@ -69,7 +67,7 @@ async function createCheckoutSession(customerEmail, priceId) {
         return session.url;
     } catch (error) {
         console.error('❌ Error creating checkout session:', error.message);
-        throw new Error('No se pudo crear la sesión de pago.');
+        throw new Error(`Stripe Error: ${error.message}`);
     }
 }
 
